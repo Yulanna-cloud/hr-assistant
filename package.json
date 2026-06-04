@@ -1,0 +1,12 @@
+{
+  "name": "hr-assistant-eps",
+  "version": "1.0.0",
+  "description": "HR Assistant for EPS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
