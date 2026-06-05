@@ -1076,54 +1076,81 @@ function analyzeInterview() {
 
 load();
 
-// ── Чтение параметров от расширения HH ───────────────────────────
-(function readURLParams() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('action') !== 'resume') return;
+// ── Интеграция с расширением HH — через localStorage ────────────
 
-  const name = decodeURIComponent(params.get('name') || '');
-  const phone = decodeURIComponent(params.get('phone') || '');
-  const vacancy = decodeURIComponent(params.get('vacancy') || '');
-  const resume = decodeURIComponent(params.get('resume') || '');
+function applyIncomingResume(payload) {
+  if (!payload || !payload.action) return;
+  if (payload.action !== 'resume') return;
 
-  if (!name && !resume) return;
+  const { name, phone, vacancy, resume, ts } = payload;
 
-  // Убираем параметры из URL
-  const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-  window.history.replaceState({}, document.title, cleanUrl);
+  // Проверяем что данные свежие (не старше 10 минут)
+  if (ts && Date.now() - ts > 600000) return;
 
-  // Переключаемся на панель нового кандидата
+  showPanel('new');
+
+  // Выбираем вакансию
+  if (vacancy && state.vacancies.length) {
+    const found = state.vacancies.find(v =>
+      v.title.toLowerCase() === vacancy.toLowerCase() ||
+      v.title.toLowerCase().includes(vacancy.toLowerCase()) ||
+      vacancy.toLowerCase().includes(v.title.toLowerCase())
+    );
+    if (found) {
+      state.currentVacancyId = found.id;
+      document.getElementById('vacancy-select').value = found.id;
+      save();
+      renderCandidates();
+      document.getElementById('no-vacancy-warn').style.display = 'none';
+    }
+  }
+
+  // Заполняем поля
+  if (name) document.getElementById('c-name').value = name;
+  if (resume) document.getElementById('c-resume').value = resume;
+
+  if (name || resume) {
+    const sub = phone ? name + ' · ' + phone : (name || 'Данные из расширения');
+    setPdfArea('loaded', 'Резюме загружено с HH.ru', sub);
+  }
+
+  // Чистим после использования
+  localStorage.removeItem('hh_resume_incoming');
+}
+
+// Проверяем при загрузке страницы
+(function checkOnLoad() {
+  // Из localStorage (основной канал)
   setTimeout(() => {
-    showPanel('new');
-
-    // Выбираем нужную вакансию если передана
-    if (vacancy && state.vacancies.length) {
-      const found = state.vacancies.find(v =>
-        v.title.toLowerCase() === vacancy.toLowerCase() ||
-        v.title.toLowerCase().includes(vacancy.toLowerCase()) ||
-        vacancy.toLowerCase().includes(v.title.toLowerCase())
-      );
-      if (found) {
-        state.currentVacancyId = found.id;
-        document.getElementById('vacancy-select').value = found.id;
-        save();
-        renderCandidates();
-        document.getElementById('no-vacancy-warn').style.display = 'none';
+    try {
+      const raw = localStorage.getItem('hh_resume_incoming');
+      if (raw) {
+        const payload = JSON.parse(raw);
+        applyIncomingResume(payload);
       }
+    } catch(e) {}
+
+    // Из URL (fallback если ассистент не был открыт)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') === 'extension') {
+      // Чистим URL
+      window.history.replaceState({}, document.title,
+        window.location.protocol + '//' + window.location.host + window.location.pathname);
+      // Данные придут через localStorage чуть позже
+      setTimeout(() => {
+        try {
+          const raw = localStorage.getItem('hh_resume_incoming');
+          if (raw) applyIncomingResume(JSON.parse(raw));
+        } catch(e) {}
+      }, 1000);
     }
-
-    // Заполняем поля
-    if (name) document.getElementById('c-name').value = name;
-    if (resume) document.getElementById('c-resume').value = resume;
-
-    // Обновляем PDF-area чтобы показать что данные загружены
-    if (name || resume) {
-      const sub = phone ? name + ' · ' + phone : name;
-      setPdfArea('loaded', 'Резюме загружено с HH.ru', sub || 'Данные из расширения');
-    }
-
-  }, 300);
+  }, 400);
 })();
+
+// Слушаем сообщение от расширения в реальном времени
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.action === 'resume') applyIncomingResume(e.data);
+});
 </script>
 </body>
 </html>
