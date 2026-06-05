@@ -950,7 +950,7 @@ async function callAPI({ system, user, loadingEl, onSuccess, onError }) {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: state.model || 'claude-sonnet-4-6', max_tokens: 2000, system, messages: [{ role: 'user', content: user }] })
+      body: JSON.stringify({ model: state.model || 'claude-sonnet-4-6', max_tokens: 4000, system, messages: [{ role: 'user', content: user }] })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
@@ -1075,6 +1075,55 @@ function analyzeInterview() {
 }
 
 load();
+
+// ── Чтение параметров от расширения HH ───────────────────────────
+(function readURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('action') !== 'resume') return;
+
+  const name = decodeURIComponent(params.get('name') || '');
+  const phone = decodeURIComponent(params.get('phone') || '');
+  const vacancy = decodeURIComponent(params.get('vacancy') || '');
+  const resume = decodeURIComponent(params.get('resume') || '');
+
+  if (!name && !resume) return;
+
+  // Убираем параметры из URL
+  const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  window.history.replaceState({}, document.title, cleanUrl);
+
+  // Переключаемся на панель нового кандидата
+  setTimeout(() => {
+    showPanel('new');
+
+    // Выбираем нужную вакансию если передана
+    if (vacancy && state.vacancies.length) {
+      const found = state.vacancies.find(v =>
+        v.title.toLowerCase() === vacancy.toLowerCase() ||
+        v.title.toLowerCase().includes(vacancy.toLowerCase()) ||
+        vacancy.toLowerCase().includes(v.title.toLowerCase())
+      );
+      if (found) {
+        state.currentVacancyId = found.id;
+        document.getElementById('vacancy-select').value = found.id;
+        save();
+        renderCandidates();
+        document.getElementById('no-vacancy-warn').style.display = 'none';
+      }
+    }
+
+    // Заполняем поля
+    if (name) document.getElementById('c-name').value = name;
+    if (resume) document.getElementById('c-resume').value = resume;
+
+    // Обновляем PDF-area чтобы показать что данные загружены
+    if (name || resume) {
+      const sub = phone ? name + ' · ' + phone : name;
+      setPdfArea('loaded', 'Резюме загружено с HH.ru', sub || 'Данные из расширения');
+    }
+
+  }, 300);
+})();
 </script>
 </body>
 </html>
