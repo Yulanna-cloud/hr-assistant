@@ -1120,38 +1120,53 @@ function applyIncomingResume(payload) {
   localStorage.removeItem('hh_resume_incoming');
 }
 
-// Проверяем при загрузке страницы и постоянно слушаем новые данные
+// Читаем данные от расширения при загрузке страницы
 (function checkOnLoad() {
-  // Разовая проверка при загрузке
   setTimeout(() => {
+    // Способ 1: через localStorage (если расширение записало напрямую)
     try {
       const raw = localStorage.getItem('hh_resume_incoming');
       if (raw) {
         const payload = JSON.parse(raw);
-        applyIncomingResume(payload);
+        if (payload && payload.ts && Date.now() - payload.ts < 600000) {
+          applyIncomingResume(payload);
+          return;
+        }
       }
     } catch(e) {}
-  }, 400);
 
-  // Постоянная проверка каждую секунду
-  setInterval(() => {
+    // Способ 2: через URL-параметр с данными в sessionStorage
     try {
-      const raw = localStorage.getItem('hh_resume_incoming');
-      if (!raw) return;
-      const payload = JSON.parse(raw);
-      if (!payload || !payload.ts) return;
-      // Проверяем что данные новые (не старше 10 минут) и ещё не применялись
-      const lastApplied = window._lastAppliedResumeTs || 0;
-      if (payload.ts > lastApplied) {
-        applyIncomingResume(payload);
+      const raw = sessionStorage.getItem('hh_resume_incoming');
+      if (raw) {
+        const payload = JSON.parse(raw);
+        if (payload && payload.ts && Date.now() - payload.ts < 600000) {
+          applyIncomingResume(payload);
+          sessionStorage.removeItem('hh_resume_incoming');
+          return;
+        }
       }
     } catch(e) {}
-  }, 1000);
+  }, 500);
 })();
 
-// Слушаем сообщение от расширения в реальном времени
+// Слушаем сообщение от расширения через window.postMessage
 window.addEventListener('message', (e) => {
   if (e.data && e.data.action === 'resume') applyIncomingResume(e.data);
+});
+
+// Слушаем событие от расширения когда новая вкладка
+window.addEventListener('hh_resume_ready', () => {
+  try {
+    const raw = sessionStorage.getItem('hh_resume_incoming');
+    if (raw) {
+      const payload = JSON.parse(raw);
+      if (payload && payload.ts && Date.now() - payload.ts < 600000) {
+        applyIncomingResume(payload);
+        sessionStorage.removeItem('hh_resume_incoming');
+      }
+    }
+  } catch(e) {}
 });
 </script>
 </body>
