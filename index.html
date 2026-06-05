@@ -30,8 +30,6 @@
 }
 html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: -apple-system,'Segoe UI',system-ui,sans-serif; font-size: 14px; line-height: 1.5; }
 .app { display: flex; height: 100vh; }
-
-/* Sidebar */
 .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--surface); border-right: 0.5px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
 .sidebar-logo { padding: 16px 14px 12px; border-bottom: 0.5px solid var(--border); }
 .sidebar-logo h1 { font-size: 14px; font-weight: 600; color: var(--text); }
@@ -43,8 +41,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .nav-btn:hover { background: var(--surface2); color: var(--text); }
 .nav-btn.active { background: var(--surface2); color: var(--text); font-weight: 500; }
 .nav-btn.active i { opacity: 1; }
-
-/* Vacancy selector */
 .vacancy-selector { padding: 8px; border-bottom: 0.5px solid var(--border); }
 .vacancy-select-wrap { position: relative; }
 .vacancy-select-wrap select { width: 100%; padding: 6px 28px 6px 8px; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; color: var(--text); background: var(--surface2); appearance: none; cursor: pointer; outline: none; }
@@ -53,8 +49,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .vac-btn { flex: 1; padding: 5px; background: none; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 11px; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.12s; }
 .vac-btn:hover { background: var(--surface2); color: var(--text); }
 .vac-btn.danger:hover { background: var(--red-bg); color: var(--red-text); border-color: var(--red-text); }
-
-/* Candidates */
 .candidates-section { flex: 1; overflow-y: auto; padding: 4px 8px 8px; }
 .cands-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 8px 8px 4px; }
 .cand-item { padding: 8px 9px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 1px; transition: background 0.12s; }
@@ -66,19 +60,15 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .badge-new { background: var(--blue-bg); color: var(--blue-text); }
 .badge-interview { background: var(--amber-bg); color: var(--amber-text); }
 .badge-done { background: var(--green-bg); color: var(--green-text); }
-
+.badge-crm { background: #e6f4e6; color: #1a6b1a; }
 .sidebar-footer { padding: 8px; border-top: 0.5px solid var(--border); }
 .add-cand-btn { width: 100%; padding: 7px; background: none; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 12px; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.12s; }
 .add-cand-btn:hover { background: var(--surface2); color: var(--text); }
-
-/* Main */
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 .main-header { padding: 13px 24px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); flex-shrink: 0; }
 .main-header h2 { font-size: 15px; font-weight: 600; color: var(--text); }
 .header-btns { display: flex; gap: 8px; }
 .main-body { flex: 1; overflow-y: auto; padding: 24px; }
-
-/* Buttons */
 .btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: 0.5px solid var(--border-med); background: none; color: var(--text2); transition: background 0.12s, color 0.12s; font-family: inherit; }
 .btn:hover { background: var(--surface2); color: var(--text); }
 .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 500; }
@@ -86,62 +76,62 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .btn-full { width: 100%; justify-content: center; padding: 10px; }
 .btn-danger { border-color: var(--red-text); color: var(--red-text); }
 .btn-danger:hover { background: var(--red-bg); }
-
-/* Forms */
+.btn-crm { background: #1F3864; color: #fff; border-color: #1F3864; font-weight: 600; font-size: 13px; padding: 10px 20px; }
+.btn-crm:hover { background: #162a4a; color: #fff; }
 .field { margin-bottom: 16px; }
 .field label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
 .field-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
-input[type=text], input[type=password], textarea, select {
-  width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm);
-  font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface);
-  outline: none; transition: border-color 0.15s; resize: vertical; line-height: 1.5;
-}
+input[type=text], input[type=password], textarea, select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; resize: vertical; line-height: 1.5; }
 input:focus, textarea:focus { border-color: var(--text); }
-
-/* Info boxes */
 .info-box { border-radius: var(--radius-sm); padding: 10px 13px; font-size: 12px; display: flex; gap: 8px; align-items: flex-start; margin-bottom: 16px; }
 .info-box i { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 .info-blue { background: var(--blue-bg); color: var(--blue-text); }
 .info-green { background: var(--green-bg); color: var(--green-text); }
 .info-amber { background: var(--amber-bg); color: var(--amber-text); }
-
-/* Panels */
 .panel { display: none; }
 .panel.active { display: block; }
-
-/* Tabs */
 .tabs { display: flex; border-bottom: 0.5px solid var(--border); margin-bottom: 20px; }
 .tab-btn { padding: 9px 16px; font-size: 13px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: color 0.12s; font-family: inherit; }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-
-/* AI Result */
 .ai-result { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 18px; margin-top: 16px; font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
 .ai-result-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-
-/* Loading */
 .loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 13px; padding: 24px 0; }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: blink 1.2s ease-in-out infinite; }
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
-
 .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
 .empty i { font-size: 36px; margin-bottom: 12px; display: block; }
 .empty p { font-size: 13px; }
-
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(8px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 100; }
 .toast.show { opacity: 1; transform: translateY(0); }
-
 .section-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
 hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0; }
-
-/* Modal */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 440px; max-width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
 .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
 .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* PDF Upload */
+.pdf-upload-area { border: 2px dashed var(--border-med); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.15s; margin-bottom: 16px; }
+.pdf-upload-area:hover { border-color: var(--text); background: var(--surface2); }
+.pdf-upload-area.dragging { border-color: var(--blue-text); background: var(--blue-bg); }
+.pdf-upload-area.loaded { border-color: var(--green-text); background: var(--green-bg); }
+.pdf-upload-area.error { border-color: var(--red-text); background: var(--red-bg); }
+.pdf-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+.pdf-upload-area p { font-size: 13px; color: var(--text2); }
+.pdf-upload-area.loaded p { color: var(--green-text); font-weight: 500; }
+.pdf-upload-area.error p { color: var(--red-text); }
+
+/* CRM export box */
+.crm-export-box { background: #f0f4ff; border: 1.5px solid #1F3864; border-radius: var(--radius); padding: 16px 20px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.crm-export-box-text { font-size: 13px; color: #1F3864; }
+.crm-export-box-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+
+/* Model selector */
+.model-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--surface2); border: 0.5px solid var(--border-med); border-radius: 20px; padding: 2px 8px; font-size: 11px; color: var(--text3); }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -150,15 +140,11 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
 </head>
 <body>
 <div class="app">
-
-  <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <h1>HR-ассистент</h1>
       <p>ЭнергоПромСервис</p>
     </div>
-
-    <!-- Vacancy selector -->
     <div class="vacancy-selector">
       <div class="vacancy-select-wrap">
         <select id="vacancy-select" onchange="onVacancyChange()">
@@ -166,12 +152,11 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
         </select>
       </div>
       <div class="vacancy-actions">
-        <button class="vac-btn" onclick="showPanel('vacancy')" title="Редактировать"><i class="ti ti-edit"></i> Изменить</button>
-        <button class="vac-btn" onclick="newVacancy()" title="Новая вакансия"><i class="ti ti-plus"></i> Новая</button>
-        <button class="vac-btn danger" onclick="deleteVacancy()" title="Удалить вакансию"><i class="ti ti-trash"></i></button>
+        <button class="vac-btn" onclick="showPanel('vacancy')"><i class="ti ti-edit"></i> Изменить</button>
+        <button class="vac-btn" onclick="newVacancy()"><i class="ti ti-plus"></i> Новая</button>
+        <button class="vac-btn danger" onclick="deleteVacancy()"><i class="ti ti-trash"></i></button>
       </div>
     </div>
-
     <div class="nav-section">
       <div class="nav-label">Меню</div>
       <button class="nav-btn" id="nav-new" onclick="showPanel('new')">
@@ -184,12 +169,10 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
         <i class="ti ti-settings"></i> Настройки
       </button>
     </div>
-
     <div class="candidates-section">
       <div class="cands-label">Кандидаты</div>
       <div id="candidates-list"></div>
     </div>
-
     <div class="sidebar-footer">
       <button class="add-cand-btn" onclick="showPanel('new')">
         <i class="ti ti-plus"></i> Добавить кандидата
@@ -197,7 +180,6 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
     </div>
   </div>
 
-  <!-- Main -->
   <div class="main">
     <div class="main-header">
       <h2 id="main-title">Выбери вакансию</h2>
@@ -205,72 +187,41 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
     </div>
     <div class="main-body">
 
-      <!-- Vacancy panel -->
+      <!-- Vacancy -->
       <div class="panel" id="panel-vacancy">
         <div class="info-box info-blue">
           <i class="ti ti-info-circle"></i>
           <span>Контекст вакансии автоматически подставляется в каждый анализ резюме и интервью</span>
         </div>
-        <div class="field">
-          <label>Название вакансии</label>
-          <input type="text" id="v-title" placeholder="Например: Инженер-сметчик">
-        </div>
-        <div class="field">
-          <label>Описание вакансии (требования, задачи, условия)</label>
-          <textarea id="v-desc" rows="7" placeholder="Вставь полный текст вакансии..."></textarea>
-        </div>
-        <div class="field">
-          <label>О компании</label>
-          <textarea id="v-company" rows="3" placeholder="ЭнергоПромСервис — инжиниринговая компания, Казань..."></textarea>
-        </div>
-        <div class="field">
-          <label>Твои комментарии (что важно, на что обращать внимание)</label>
-          <textarea id="v-notes" rows="4" placeholder="Например: важна самостоятельная работа в Гранд-Смете, опыт по ЭОМ обязателен..."></textarea>
-        </div>
-        <button class="btn btn-primary btn-full" onclick="saveVacancy()">
-          <i class="ti ti-check"></i> Сохранить вакансию
-        </button>
+        <div class="field"><label>Название вакансии</label><input type="text" id="v-title" placeholder="Например: Инженер-сметчик"></div>
+        <div class="field"><label>Описание вакансии (требования, задачи, условия)</label><textarea id="v-desc" rows="7" placeholder="Вставь полный текст вакансии..."></textarea></div>
+        <div class="field"><label>О компании</label><textarea id="v-company" rows="3" placeholder="ЭнергоПромСервис — инжиниринговая компания, Казань..."></textarea></div>
+        <div class="field"><label>Твои комментарии</label><textarea id="v-notes" rows="4" placeholder="Например: важна самостоятельная работа в Гранд-Смете, опыт по ЭОМ обязателен..."></textarea></div>
+        <button class="btn btn-primary btn-full" onclick="saveVacancy()"><i class="ti ti-check"></i> Сохранить вакансию</button>
       </div>
 
-      <!-- Prompt panel -->
+      <!-- Prompt -->
       <div class="panel" id="panel-prompt">
         <div class="info-box info-amber">
           <i class="ti ti-bulb"></i>
-          <div>
-            <strong>Как это работает:</strong> этот промт — инструкция для ИИ при анализе резюме. Можешь настроить под себя: добавить свои критерии, изменить структуру ответа, указать специфику отрасли. Переменная <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{VACANCY}</code> — автоматически подставляется контекст вакансии.
-          </div>
+          <div><strong>Промт — инструкция для ИИ.</strong> Переменная <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{VACANCY}</code> заменяется на контекст вакансии автоматически.</div>
         </div>
-
-        <div class="field">
-          <label>Промт для анализа резюме</label>
-          <textarea id="prompt-resume" rows="16"></textarea>
-          <p class="field-hint">Редактируй под свои задачи. Кнопка «Сбросить» вернёт исходный вариант.</p>
-        </div>
-        <div style="display:flex; gap:8px;">
+        <div class="field"><label>Промт для анализа резюме</label><textarea id="prompt-resume" rows="14"></textarea></div>
+        <div style="display:flex;gap:8px;margin-bottom:20px;">
           <button class="btn btn-primary" onclick="savePrompt()"><i class="ti ti-check"></i> Сохранить</button>
-          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить к исходному</button>
+          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить</button>
         </div>
-
         <hr class="divider">
-
-        <div class="field">
-          <label>Промт для вопросов к интервью</label>
-          <textarea id="prompt-questions" rows="12"></textarea>
-        </div>
-        <div style="display:flex; gap:8px;">
+        <div class="field"><label>Промт для вопросов к интервью</label><textarea id="prompt-questions" rows="12"></textarea></div>
+        <div style="display:flex;gap:8px;margin-bottom:20px;">
           <button class="btn btn-primary" onclick="savePrompt()"><i class="ti ti-check"></i> Сохранить</button>
-          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить к исходному</button>
+          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить</button>
         </div>
-
         <hr class="divider">
-
-        <div class="field">
-          <label>Промт для разбора интервью</label>
-          <textarea id="prompt-interview" rows="12"></textarea>
-        </div>
-        <div style="display:flex; gap:8px;">
+        <div class="field"><label>Промт для разбора интервью</label><textarea id="prompt-interview" rows="12"></textarea></div>
+        <div style="display:flex;gap:8px;">
           <button class="btn btn-primary" onclick="savePrompt()"><i class="ti ti-check"></i> Сохранить</button>
-          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить к исходному</button>
+          <button class="btn" onclick="resetPrompt()"><i class="ti ti-refresh"></i> Сбросить</button>
         </div>
       </div>
 
@@ -280,13 +231,20 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
           <i class="ti ti-alert-triangle"></i>
           <span>Сначала выбери или создай вакансию — без неё анализ будет без контекста</span>
         </div>
-        <div class="field">
-          <label>Имя кандидата</label>
-          <input type="text" id="c-name" placeholder="Фамилия Имя Отчество">
+
+        <!-- PDF Upload -->
+        <div class="pdf-upload-area" id="pdf-area" onclick="document.getElementById('pdf-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+          <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="onFileSelected(event)">
+          <span class="pdf-icon">📄</span>
+          <p><strong>Загрузи PDF резюме</strong></p>
+          <p style="font-size:11px;color:var(--text3);margin-top:4px;">Нажми или перетащи файл сюда</p>
         </div>
+
+        <div class="field"><label>Имя кандидата</label><input type="text" id="c-name" placeholder="Фамилия Имя Отчество — заполнится автоматически из PDF"></div>
         <div class="field">
-          <label>Текст резюме (скопируй с hh.ru)</label>
-          <textarea id="c-resume" rows="14" placeholder="Вставь полный текст резюме..."></textarea>
+          <label>Текст резюме</label>
+          <textarea id="c-resume" rows="8" placeholder="Заполнится автоматически из PDF. Или вставь текст вручную..."></textarea>
+          <p class="field-hint">Из PDF извлекается автоматически. Можно отредактировать.</p>
         </div>
         <button class="btn btn-primary btn-full" onclick="analyzeResume()">
           <i class="ti ti-sparkles"></i> Проанализировать резюме
@@ -303,23 +261,13 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
         </div>
         <div id="tab-resume"><div id="resume-content"></div></div>
         <div id="tab-questions" style="display:none;">
-          <div class="field">
-            <label>Особый фокус для этого кандидата</label>
-            <textarea id="q-focus" rows="3" placeholder="Что особенно важно проверить? Например: реальная глубина сметных знаний, самостоятельность..."></textarea>
-          </div>
-          <button class="btn btn-primary btn-full" onclick="generateQuestions()">
-            <i class="ti ti-list"></i> Сгенерировать вопросы
-          </button>
+          <div class="field"><label>Особый фокус для этого кандидата</label><textarea id="q-focus" rows="3" placeholder="Что особенно важно проверить?"></textarea></div>
+          <button class="btn btn-primary btn-full" onclick="generateQuestions()"><i class="ti ti-list"></i> Сгенерировать вопросы</button>
           <div id="questions-content"></div>
         </div>
         <div id="tab-interview" style="display:none;">
-          <div class="field">
-            <label>Транскрипт или заметки интервью</label>
-            <textarea id="i-transcript" rows="12" placeholder="Вставь запись интервью, заметки или ключевые ответы кандидата..."></textarea>
-          </div>
-          <button class="btn btn-primary btn-full" onclick="analyzeInterview()">
-            <i class="ti ti-brain"></i> Разобрать интервью
-          </button>
+          <div class="field"><label>Транскрипт или заметки интервью</label><textarea id="i-transcript" rows="12" placeholder="Вставь запись интервью..."></textarea></div>
+          <button class="btn btn-primary btn-full" onclick="analyzeInterview()"><i class="ti ti-brain"></i> Разобрать интервью</button>
           <div id="interview-content"></div>
         </div>
       </div>
@@ -332,16 +280,30 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
           <input type="password" id="api-key" placeholder="sk-ant-...">
           <p class="field-hint">Хранится только в браузере. Никуда не отправляется кроме api.anthropic.com</p>
         </div>
-        <button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-check"></i> Сохранить ключ</button>
+        <div class="field">
+          <label>Модель</label>
+          <select id="model-select">
+            <option value="claude-haiku-4-5-20251001">claude-haiku-4-5 — быстрая и дешёвая (~$0.001/резюме)</option>
+            <option value="claude-sonnet-4-6" selected>claude-sonnet-4-6 — оптимальная (~$0.01/резюме) ✓ рекомендуется</option>
+            <option value="claude-opus-4-6">claude-opus-4-6 — максимальное качество (~$0.05/резюме)</option>
+          </select>
+          <p class="field-hint">Для анализа резюме Sonnet — оптимальный выбор.</p>
+        </div>
+        <div class="field">
+          <label>Ссылка на вашу CRM</label>
+          <input type="text" id="crm-url" placeholder="https://yulanna-cloud.github.io/crm/">
+          <p class="field-hint">Будет использоваться для кнопки «Добавить в CRM»</p>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-check"></i> Сохранить</button>
         <hr class="divider">
         <div class="section-title">Как получить API ключ</div>
-        <div class="info-box info-blue" style="flex-direction:column; gap:6px;">
+        <div class="info-box info-blue" style="flex-direction:column;gap:6px;">
           <div><strong>console.anthropic.com</strong></div>
-          <ol style="padding-left:16px; font-size:12px; line-height:1.9;">
+          <ol style="padding-left:16px;font-size:12px;line-height:1.9;">
             <li>Зарегистрируйся на console.anthropic.com</li>
             <li>Раздел API Keys → Create Key</li>
             <li>Пополни баланс от $5 (Billing → Add credits)</li>
-            <li>Анализ одного резюме ≈ $0.01–0.03</li>
+            <li>Анализ одного резюме ≈ $0.01 на Sonnet</li>
           </ol>
         </div>
         <hr class="divider">
@@ -357,10 +319,7 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
 <div class="modal-overlay" id="modal-new-vacancy">
   <div class="modal">
     <h3>Новая вакансия</h3>
-    <div class="field">
-      <label>Название вакансии</label>
-      <input type="text" id="modal-vac-name" placeholder="Например: РОП, Главный энергетик...">
-    </div>
+    <div class="field"><label>Название вакансии</label><input type="text" id="modal-vac-name" placeholder="Например: РОП, Главный энергетик..."></div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Отмена</button>
       <button class="btn btn-primary" onclick="createVacancy()"><i class="ti ti-plus"></i> Создать</button>
@@ -371,7 +330,7 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Default prompts ──────────────────────────────────────────────
+// ── Default prompts ───────────────────────────────────────────────
 const DEFAULT_PROMPTS = {
   resume: `Ты опытный HR-аналитик. Анализируй резюме кандидата применительно к конкретной вакансии.
 
@@ -416,30 +375,24 @@ const DEFAULT_PROMPTS = {
 Пиши конкретно, давай практические выводы.`
 };
 
-// ─── State ────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────
 let state = {
   apiKey: '',
-  vacancies: [],          // [{id, title, desc, company, notes}]
+  model: 'claude-sonnet-4-6',
+  crmUrl: 'https://yulanna-cloud.github.io/crm/',
+  vacancies: [],
   currentVacancyId: null,
-  candidates: [],         // [{id, vacancyId, name, resume, date, ...}]
+  candidates: [],
   currentCandidateId: null,
   prompts: { ...DEFAULT_PROMPTS }
 };
 
-function save() {
-  try { localStorage.setItem('hr_eps_v2', JSON.stringify(state)); } catch(e) {}
-}
+function save() { try { localStorage.setItem('hr_eps_v2', JSON.stringify(state)); } catch(e) {} }
 
 function load() {
   try {
     const s = localStorage.getItem('hr_eps_v2');
-    if (s) {
-      const parsed = JSON.parse(s);
-      state = { ...state, ...parsed };
-      // ensure prompts exist
-      if (!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
-    }
-    // migrate old v1 data
+    if (s) { const p = JSON.parse(s); state = { ...state, ...p }; if (!state.prompts) state.prompts = { ...DEFAULT_PROMPTS }; }
     const old = localStorage.getItem('hr_eps_v1');
     if (old && !s) {
       const p = JSON.parse(old);
@@ -458,18 +411,17 @@ function load() {
 
 function applyLoaded() {
   if (state.apiKey) document.getElementById('api-key').value = state.apiKey;
+  if (state.model) document.getElementById('model-select').value = state.model;
+  if (state.crmUrl) document.getElementById('crm-url').value = state.crmUrl;
   document.getElementById('prompt-resume').value = state.prompts.resume;
   document.getElementById('prompt-questions').value = state.prompts.questions;
   document.getElementById('prompt-interview').value = state.prompts.interview;
   renderVacancySelect();
   renderCandidates();
-  if (state.vacancies.length === 0) {
-    showPanel('vacancy');
-    document.getElementById('main-title').textContent = 'Создай первую вакансию';
-  }
+  if (state.vacancies.length === 0) { showPanel('vacancy'); document.getElementById('main-title').textContent = 'Создай первую вакансию'; }
 }
 
-// ─── Toast ────────────────────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────────────
 function toast(msg) {
   const el = document.getElementById('toast');
   el.innerHTML = `<i class="ti ti-check"></i> ${msg}`;
@@ -477,37 +429,81 @@ function toast(msg) {
   setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-// ─── Vacancies ────────────────────────────────────────────────────
+// ── PDF ───────────────────────────────────────────────────────────
+function loadPDFJS() {
+  return new Promise((resolve, reject) => {
+    if (typeof pdfjsLib !== 'undefined') { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+    s.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js'; resolve(); };
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+function setPdfArea(status, text, sub) {
+  const area = document.getElementById('pdf-area');
+  area.className = 'pdf-upload-area' + (status ? ' ' + status : '');
+  area.innerHTML = `<input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="onFileSelected(event)">
+    <span class="pdf-icon">${status === 'loaded' ? '✅' : status === 'error' ? '⚠️' : '📄'}</span>
+    <p><strong>${text}</strong></p>
+    <p style="font-size:11px;color:var(--text3);margin-top:4px;">${sub}</p>`;
+}
+
+function extractNameFromText(text) {
+  const first500 = text.substring(0, 600);
+  const match = first500.match(/([А-ЯЁ][а-яё]+)\s+([А-ЯЁ][а-яё]+)\s+([А-ЯЁ][а-яё]+)/);
+  return match ? match[0] : '';
+}
+
+async function parsePDF(file) {
+  setPdfArea('', '⏳ Читаю PDF...', 'Подожди секунду');
+  try {
+    await loadPDFJS();
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const pg = await pdf.getPage(i);
+      const tc = await pg.getTextContent();
+      text += tc.items.map(x => x.str).join(' ') + '\n';
+    }
+    const name = extractNameFromText(text);
+    if (name) document.getElementById('c-name').value = name;
+    document.getElementById('c-resume').value = text.trim();
+    setPdfArea('loaded', file.name, name ? `Имя: ${name}` : 'Имя не найдено — заполни вручную');
+  } catch(e) {
+    setPdfArea('error', 'Ошибка чтения PDF', 'Вставь текст резюме вручную');
+  }
+}
+
+function onFileSelected(e) { const f = e.target.files[0]; if (f) parsePDF(f); }
+function onDragOver(e) { e.preventDefault(); document.getElementById('pdf-area').classList.add('dragging'); }
+function onDragLeave(e) { document.getElementById('pdf-area').classList.remove('dragging'); }
+function onDrop(e) { e.preventDefault(); document.getElementById('pdf-area').classList.remove('dragging'); const f = e.dataTransfer.files[0]; if (f && f.type === 'application/pdf') parsePDF(f); }
+
+// ── Vacancies ─────────────────────────────────────────────────────
 function renderVacancySelect() {
   const sel = document.getElementById('vacancy-select');
   sel.innerHTML = '<option value="">— Выбери вакансию —</option>';
   state.vacancies.forEach(v => {
     const opt = document.createElement('option');
-    opt.value = v.id;
-    opt.textContent = v.title;
+    opt.value = v.id; opt.textContent = v.title;
     if (v.id === state.currentVacancyId) opt.selected = true;
     sel.appendChild(opt);
   });
 }
 
-function currentVacancy() {
-  return state.vacancies.find(v => v.id === state.currentVacancyId);
-}
+function currentVacancy() { return state.vacancies.find(v => v.id === state.currentVacancyId); }
 
 function onVacancyChange() {
   const id = document.getElementById('vacancy-select').value;
   state.currentVacancyId = id || null;
-  save();
-  renderCandidates();
-  if (id) {
-    fillVacancyForm();
-    showPanel('vacancy');
-  }
+  save(); renderCandidates();
+  if (id) { fillVacancyForm(); showPanel('vacancy'); }
 }
 
 function fillVacancyForm() {
-  const v = currentVacancy();
-  if (!v) return;
+  const v = currentVacancy(); if (!v) return;
   document.getElementById('v-title').value = v.title || '';
   document.getElementById('v-desc').value = v.desc || '';
   document.getElementById('v-company').value = v.company || '';
@@ -519,26 +515,13 @@ function saveVacancy() {
   if (!title) { alert('Укажи название вакансии'); return; }
   if (state.currentVacancyId) {
     const v = currentVacancy();
-    if (v) {
-      v.title = title;
-      v.desc = document.getElementById('v-desc').value;
-      v.company = document.getElementById('v-company').value;
-      v.notes = document.getElementById('v-notes').value;
-    }
+    if (v) { v.title = title; v.desc = document.getElementById('v-desc').value; v.company = document.getElementById('v-company').value; v.notes = document.getElementById('v-notes').value; }
   } else {
     const id = 'v_' + Date.now();
-    state.vacancies.push({
-      id, title,
-      desc: document.getElementById('v-desc').value,
-      company: document.getElementById('v-company').value,
-      notes: document.getElementById('v-notes').value
-    });
+    state.vacancies.push({ id, title, desc: document.getElementById('v-desc').value, company: document.getElementById('v-company').value, notes: document.getElementById('v-notes').value });
     state.currentVacancyId = id;
   }
-  save();
-  renderVacancySelect();
-  renderCandidates();
-  toast('Вакансия сохранена');
+  save(); renderVacancySelect(); renderCandidates(); toast('Вакансия сохранена');
 }
 
 function newVacancy() {
@@ -553,70 +536,52 @@ function createVacancy() {
   const id = 'v_' + Date.now();
   state.vacancies.push({ id, title: name, desc: '', company: '', notes: '' });
   state.currentVacancyId = id;
-  save();
-  closeModal();
-  renderVacancySelect();
-  fillVacancyForm();
-  showPanel('vacancy');
-  document.getElementById('main-title').textContent = 'Вакансия: ' + name;
+  save(); closeModal(); renderVacancySelect(); fillVacancyForm();
+  showPanel('vacancy'); document.getElementById('main-title').textContent = 'Вакансия: ' + name;
   renderCandidates();
 }
 
 function deleteVacancy() {
   if (!state.currentVacancyId) return;
-  const v = currentVacancy();
-  if (!v) return;
+  const v = currentVacancy(); if (!v) return;
   const count = state.candidates.filter(c => c.vacancyId === state.currentVacancyId).length;
-  const msg = count > 0
-    ? `Удалить вакансию «${v.title}»? С ней связано ${count} кандидат(ов) — они тоже удалятся.`
-    : `Удалить вакансию «${v.title}»?`;
+  const msg = count > 0 ? `Удалить вакансию «${v.title}»? С ней связано ${count} кандидат(ов).` : `Удалить вакансию «${v.title}»?`;
   if (!confirm(msg)) return;
   state.candidates = state.candidates.filter(c => c.vacancyId !== state.currentVacancyId);
-  state.vacancies = state.vacancies.filter(v => v.id !== state.currentVacancyId);
+  state.vacancies = state.vacancies.filter(x => x.id !== state.currentVacancyId);
   state.currentVacancyId = state.vacancies.length ? state.vacancies[0].id : null;
-  save();
-  renderVacancySelect();
-  renderCandidates();
+  save(); renderVacancySelect(); renderCandidates();
   showPanel(state.vacancies.length ? 'vacancy' : 'settings');
   if (state.currentVacancyId) fillVacancyForm();
   toast('Вакансия удалена');
 }
 
-function closeModal() {
-  document.getElementById('modal-new-vacancy').classList.remove('open');
-}
-document.getElementById('modal-new-vacancy').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
+function closeModal() { document.getElementById('modal-new-vacancy').classList.remove('open'); }
+document.getElementById('modal-new-vacancy').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-// ─── Prompts ──────────────────────────────────────────────────────
+// ── Prompts ───────────────────────────────────────────────────────
 function savePrompt() {
   state.prompts.resume = document.getElementById('prompt-resume').value;
   state.prompts.questions = document.getElementById('prompt-questions').value;
   state.prompts.interview = document.getElementById('prompt-interview').value;
-  save();
-  toast('Промты сохранены');
+  save(); toast('Промты сохранены');
 }
-
 function resetPrompt() {
   if (!confirm('Сбросить все промты к исходным?')) return;
   state.prompts = { ...DEFAULT_PROMPTS };
   document.getElementById('prompt-resume').value = state.prompts.resume;
   document.getElementById('prompt-questions').value = state.prompts.questions;
   document.getElementById('prompt-interview').value = state.prompts.interview;
-  save();
-  toast('Промты сброшены');
+  save(); toast('Промты сброшены');
 }
 
-// ─── Navigation ───────────────────────────────────────────────────
+// ── Navigation ────────────────────────────────────────────────────
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('header-btns').innerHTML = '';
-
-  const titles = { vacancy: 'Вакансия', new: 'Новый кандидат', prompt: 'Промт анализа', settings: 'Настройки', candidate: '' };
+  const titles = { vacancy: 'Вакансия', new: 'Новый кандидат', prompt: 'Промт анализа', settings: 'Настройки' };
   document.getElementById('main-title').textContent = titles[name] || '';
-
   if (name === 'vacancy') {
     document.getElementById('panel-vacancy').classList.add('active');
     fillVacancyForm();
@@ -628,6 +593,7 @@ function showPanel(name) {
     document.getElementById('c-name').value = '';
     document.getElementById('c-resume').value = '';
     document.getElementById('new-result').innerHTML = '';
+    setPdfArea('', 'Загрузи PDF резюме', 'Нажми или перетащи файл сюда');
     document.getElementById('no-vacancy-warn').style.display = state.currentVacancyId ? 'none' : 'flex';
   } else if (name === 'prompt') {
     document.getElementById('panel-prompt').classList.add('active');
@@ -642,28 +608,25 @@ function showPanel(name) {
     document.getElementById('header-btns').innerHTML =
       `<button class="btn btn-danger" onclick="deleteCandidate()"><i class="ti ti-trash"></i> Удалить</button>`;
   }
+  renderCandidates();
 }
 
-// ─── Candidates ───────────────────────────────────────────────────
+// ── Candidates ────────────────────────────────────────────────────
 function filteredCandidates() {
   if (!state.currentVacancyId) return state.candidates;
   return state.candidates.filter(c => c.vacancyId === state.currentVacancyId);
 }
-
-function currentCandidate() {
-  return state.candidates.find(c => c.id === state.currentCandidateId);
-}
+function currentCandidate() { return state.candidates.find(c => c.id === state.currentCandidateId); }
 
 function renderCandidates() {
   const list = document.getElementById('candidates-list');
   const cands = filteredCandidates();
-  if (!cands.length) {
-    list.innerHTML = '<div style="padding:8px;font-size:11px;color:var(--text3);">Нет кандидатов</div>';
-    return;
-  }
+  if (!cands.length) { list.innerHTML = '<div style="padding:8px;font-size:11px;color:var(--text3);">Нет кандидатов</div>'; return; }
   list.innerHTML = cands.map(c => {
-    const badge = c.interviewDone
-      ? `<span class="cand-badge badge-done"><i class="ti ti-check" style="font-size:9px;"></i> разобран</span>`
+    const badge = c.addedToCrm
+      ? `<span class="cand-badge badge-crm">в CRM</span>`
+      : c.interviewDone
+      ? `<span class="cand-badge badge-done">разобран</span>`
       : c.hasQuestions
       ? `<span class="cand-badge badge-interview">интервью</span>`
       : `<span class="cand-badge badge-new">новый</span>`;
@@ -686,16 +649,13 @@ function openCandidate(id) {
   document.getElementById('interview-content').innerHTML = c.interviewHTML || '';
   document.getElementById('resume-content').innerHTML = c.resumeHTML ||
     '<div class="empty"><i class="ti ti-file-text"></i><p>Анализ резюме ещё не проводился</p></div>';
-  renderCandidates();
 }
 
 function deleteCandidate() {
   if (!confirm('Удалить кандидата?')) return;
   state.candidates = state.candidates.filter(c => c.id !== state.currentCandidateId);
   state.currentCandidateId = null;
-  save();
-  renderCandidates();
-  showPanel('new');
+  save(); renderCandidates(); showPanel('new');
 }
 
 function switchTab(tab) {
@@ -705,57 +665,43 @@ function switchTab(tab) {
   });
 }
 
-// ─── Settings ─────────────────────────────────────────────────────
+// ── Settings ──────────────────────────────────────────────────────
 function saveSettings() {
   state.apiKey = document.getElementById('api-key').value.trim();
-  save();
-  toast('API ключ сохранён');
+  state.model = document.getElementById('model-select').value;
+  state.crmUrl = document.getElementById('crm-url').value.trim();
+  save(); toast('Настройки сохранены');
 }
 
 function clearAllData() {
   if (!confirm('Удалить все вакансии, кандидатов и данные? API ключ сохранится.')) return;
-  const key = state.apiKey;
-  state = { apiKey: key, vacancies: [], currentVacancyId: null, candidates: [], currentCandidateId: null, prompts: { ...DEFAULT_PROMPTS } };
-  save();
-  applyLoaded();
-  toast('Данные удалены');
+  const key = state.apiKey; const model = state.model; const crmUrl = state.crmUrl;
+  state = { apiKey: key, model, crmUrl, vacancies: [], currentVacancyId: null, candidates: [], currentCandidateId: null, prompts: { ...DEFAULT_PROMPTS } };
+  save(); applyLoaded(); toast('Данные удалены');
 }
 
-// ─── Vacancy context ──────────────────────────────────────────────
+// ── Context ───────────────────────────────────────────────────────
 function vacancyContext() {
   const v = currentVacancy();
   if (!v) return 'Вакансия не выбрана';
-  return `ВАКАНСИЯ: ${v.title}
-ОПИСАНИЕ: ${v.desc || 'не указано'}
-О КОМПАНИИ: ${v.company || 'не указана'}
-КОММЕНТАРИИ РЕКРУТЕРА: ${v.notes || 'нет'}`;
+  return `ВАКАНСИЯ: ${v.title}\nОПИСАНИЕ: ${v.desc || 'не указано'}\nО КОМПАНИИ: ${v.company || 'не указана'}\nКОММЕНТАРИИ РЕКРУТЕРА: ${v.notes || 'нет'}`;
 }
+function buildPrompt(type) { return state.prompts[type].replace('{VACANCY}', vacancyContext()); }
 
-function buildPrompt(type) {
-  return state.prompts[type].replace('{VACANCY}', vacancyContext());
-}
-
-// ─── API ──────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────
 async function callAPI({ system, user, loadingEl, onSuccess, onError }) {
   if (!state.apiKey) { onError('Сначала укажи API ключ в разделе «Настройки»'); return; }
   loadingEl.innerHTML = `<div class="loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span> Анализирую...</div>`;
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system, messages: [{ role: 'user', content: user }] })
+      headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: state.model || 'claude-sonnet-4-6', max_tokens: 2000, system, messages: [{ role: 'user', content: user }] })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
     onSuccess(data.content[0].text);
-  } catch(e) {
-    onError(e.message);
-  }
+  } catch(e) { onError(e.message); }
 }
 
 function resultBox(label, text) {
@@ -764,15 +710,48 @@ function resultBox(label, text) {
 function errorBox(msg) {
   return `<div class="ai-result" style="color:var(--red-text);background:var(--red-bg);">⚠️ ${msg}</div>`;
 }
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── CRM export ────────────────────────────────────────────────────
+function addToCRM(candidateId) {
+  const c = state.candidates.find(x => x.id === candidateId);
+  if (!c) return;
+  const crmUrl = state.crmUrl || 'https://yulanna-cloud.github.io/crm/';
+  const v = currentVacancy();
+  // Pack candidate data into URL params
+  const params = new URLSearchParams({
+    action: 'add',
+    name: c.name,
+    vacancy: v ? v.title : '',
+    source: 'HR-ассистент',
+    analysis: c.rawAnalysis ? c.rawAnalysis.substring(0, 500) : ''
+  });
+  c.addedToCrm = true;
+  save(); renderCandidates();
+  // Open CRM with params
+  window.open(crmUrl + '?' + params.toString(), '_blank');
+  toast('Открываю CRM...');
 }
 
-// ─── Actions ──────────────────────────────────────────────────────
+function crmExportBox(candidateId) {
+  const c = state.candidates.find(x => x.id === candidateId);
+  const alreadyAdded = c && c.addedToCrm;
+  return `<div class="crm-export-box">
+    <div class="crm-export-box-text">
+      <strong>Кандидат подходит?</strong>
+      ${alreadyAdded ? '✅ Уже добавлен в CRM' : 'Добавь в CRM для дальнейшей работы'}
+    </div>
+    <button class="btn btn-crm" onclick="addToCRM('${candidateId}')" ${alreadyAdded ? 'style="opacity:0.6"' : ''}>
+      <i class="ti ti-database-plus"></i> ${alreadyAdded ? 'Открыть CRM' : 'Добавить в CRM'}
+    </button>
+  </div>`;
+}
+
+// ── Actions ───────────────────────────────────────────────────────
 function analyzeResume() {
   const name = document.getElementById('c-name').value.trim();
   const resume = document.getElementById('c-resume').value.trim();
-  if (!name || !resume) { alert('Заполни имя кандидата и текст резюме'); return; }
+  if (!name || !resume) { alert('Заполни имя кандидата и текст резюме (загрузи PDF или вставь текст)'); return; }
   const el = document.getElementById('new-result');
   callAPI({
     system: buildPrompt('resume'),
@@ -781,13 +760,7 @@ function analyzeResume() {
     onSuccess: (text) => {
       const id = 'c_' + Date.now();
       const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
-      state.candidates.unshift({
-        id, name, resume, date,
-        vacancyId: state.currentVacancyId,
-        resumeHTML: resultBox('Анализ резюме · ' + name, text),
-        rawAnalysis: text,
-        hasQuestions: false, interviewDone: false
-      });
+      state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, resumeHTML: resultBox('Анализ резюме · ' + name, text) + crmExportBox(id), rawAnalysis: text, hasQuestions: false, interviewDone: false, addedToCrm: false });
       state.currentCandidateId = id;
       save();
       el.innerHTML = `<div class="info-box info-green"><i class="ti ti-circle-check"></i> Готово! Открываю карточку...</div>`;
@@ -798,8 +771,7 @@ function analyzeResume() {
 }
 
 function generateQuestions() {
-  const c = currentCandidate();
-  if (!c) return;
+  const c = currentCandidate(); if (!c) return;
   const focus = document.getElementById('q-focus').value;
   const el = document.getElementById('questions-content');
   callAPI({
@@ -818,8 +790,7 @@ function generateQuestions() {
 }
 
 function analyzeInterview() {
-  const c = currentCandidate();
-  if (!c) return;
+  const c = currentCandidate(); if (!c) return;
   const transcript = document.getElementById('i-transcript').value.trim();
   if (!transcript) { alert('Вставь транскрипт или заметки интервью'); return; }
   const el = document.getElementById('interview-content');
