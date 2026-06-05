@@ -8,134 +8,176 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #f8f7f4; --surface: #ffffff; --surface2: #f2f1ee;
-  --border: rgba(0,0,0,0.10); --border-med: rgba(0,0,0,0.18);
-  --text: #1a1916; --text2: #6b6a66; --text3: #a8a7a3;
-  --blue-bg: #e8f0fb; --blue-text: #1a4fa0;
-  --green-bg: #e6f4e6; --green-text: #1a6b1a;
-  --amber-bg: #fdf3dc; --amber-text: #7a4d00;
-  --red-bg: #fceaea; --red-text: #a02020;
-  --sidebar-w: 240px; --radius: 10px; --radius-sm: 6px;
+  --navy: #1F3864;
+  --navy-dark: #162a4a;
+  --navy-deep: #0d1f35;
+  --navy-light: #2a4a7f;
+  --blue-mid: #2563a8;
+  --bg: #eef2f7;
+  --surface: #ffffff;
+  --surface2: #f0f4fa;
+  --surface3: #e3eaf5;
+  --border: rgba(31,56,100,0.12);
+  --border-med: rgba(31,56,100,0.22);
+  --text: #0d1f35;
+  --text2: #3a5272;
+  --text3: #7a93b4;
+  --blue-bg: #e3eaf5;
+  --blue-text: #1F3864;
+  --green-bg: #e6f4e6;
+  --green-text: #1a6b1a;
+  --amber-bg: #fdf3dc;
+  --amber-text: #7a4d00;
+  --red-bg: #fceaea;
+  --red-text: #a02020;
+  --accent: #2563a8;
+  --accent-light: #d6e4f7;
+  --sidebar-w: 248px;
+  --radius: 10px;
+  --radius-sm: 6px;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #18181a; --surface: #222224; --surface2: #2a2a2c;
-    --border: rgba(255,255,255,0.09); --border-med: rgba(255,255,255,0.16);
-    --text: #f0efea; --text2: #9a9994; --text3: #5a5956;
-    --blue-bg: #162040; --blue-text: #7aaef5;
-    --green-bg: #0e2a0e; --green-text: #7acf7a;
-    --amber-bg: #2a1e00; --amber-text: #f5c842;
-    --red-bg: #2a0e0e; --red-text: #f57a7a;
-  }
-}
-html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: -apple-system,'Segoe UI',system-ui,sans-serif; font-size: 14px; line-height: 1.5; }
+
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; }
 .app { display: flex; height: 100vh; }
-.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--surface); border-right: 0.5px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-.sidebar-logo { padding: 16px 14px 12px; border-bottom: 0.5px solid var(--border); }
-.sidebar-logo h1 { font-size: 14px; font-weight: 600; color: var(--text); }
-.sidebar-logo p { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.nav-section { padding: 10px 8px 2px; }
-.nav-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 0 8px; margin-bottom: 2px; }
-.nav-btn { width: 100%; text-align: left; background: none; border: none; padding: 7px 9px; border-radius: var(--radius-sm); font-size: 13px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.12s, color 0.12s; }
-.nav-btn i { font-size: 15px; opacity: 0.7; }
-.nav-btn:hover { background: var(--surface2); color: var(--text); }
-.nav-btn.active { background: var(--surface2); color: var(--text); font-weight: 500; }
-.nav-btn.active i { opacity: 1; }
-.vacancy-selector { padding: 8px; border-bottom: 0.5px solid var(--border); }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; overflow: hidden; box-shadow: 2px 0 12px rgba(31,56,100,0.25); }
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo h1 { font-size: 15px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; }
+.sidebar-logo p { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+
+.vacancy-selector { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .vacancy-select-wrap { position: relative; }
-.vacancy-select-wrap select { width: 100%; padding: 6px 28px 6px 8px; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; color: var(--text); background: var(--surface2); appearance: none; cursor: pointer; outline: none; }
-.vacancy-select-wrap::after { content: "\ea6e"; font-family: 'tabler-icons'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text3); pointer-events: none; }
-.vacancy-actions { display: flex; gap: 4px; margin-top: 5px; }
-.vac-btn { flex: 1; padding: 5px; background: none; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 11px; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.12s; }
-.vac-btn:hover { background: var(--surface2); color: var(--text); }
+.vacancy-select-wrap select { width: 100%; padding: 7px 28px 7px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; color: #fff; background: rgba(255,255,255,0.1); appearance: none; cursor: pointer; outline: none; }
+.vacancy-select-wrap select option { background: var(--navy-dark); color: #fff; }
+.vacancy-select-wrap::after { content: "\ea6e"; font-family: 'tabler-icons'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 13px; color: rgba(255,255,255,0.5); pointer-events: none; }
+.vacancy-actions { display: flex; gap: 4px; margin-top: 6px; }
+.vac-btn { flex: 1; padding: 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); font-size: 11px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.12s; }
+.vac-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
 .vac-btn.danger:hover { background: var(--red-bg); color: var(--red-text); border-color: var(--red-text); }
+
+.nav-section { padding: 10px 8px 2px; }
+.nav-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 8px; margin-bottom: 3px; }
+.nav-btn { width: 100%; text-align: left; background: none; border: none; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px; color: rgba(255,255,255,0.65); cursor: pointer; display: flex; align-items: center; gap: 9px; transition: background 0.12s, color 0.12s; }
+.nav-btn i { font-size: 15px; opacity: 0.7; }
+.nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.nav-btn.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+.nav-btn.active i { opacity: 1; }
+
 .candidates-section { flex: 1; overflow-y: auto; padding: 4px 8px 8px; }
-.cands-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 8px 8px 4px; }
-.cand-item { padding: 8px 9px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 1px; transition: background 0.12s; }
-.cand-item:hover { background: var(--surface2); }
-.cand-item.active { background: var(--surface2); border: 0.5px solid var(--border-med); }
-.cand-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cand-date { font-size: 10px; color: var(--text3); margin-top: 1px; }
-.cand-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; padding: 1px 6px; border-radius: 20px; margin-top: 3px; }
-.badge-new { background: var(--blue-bg); color: var(--blue-text); }
-.badge-interview { background: var(--amber-bg); color: var(--amber-text); }
-.badge-done { background: var(--green-bg); color: var(--green-text); }
-.badge-crm { background: #e6f4e6; color: #1a6b1a; }
-.sidebar-footer { padding: 8px; border-top: 0.5px solid var(--border); }
-.add-cand-btn { width: 100%; padding: 7px; background: none; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 12px; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.12s; }
-.add-cand-btn:hover { background: var(--surface2); color: var(--text); }
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-.main-header { padding: 13px 24px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); flex-shrink: 0; }
-.main-header h2 { font-size: 15px; font-weight: 600; color: var(--text); }
+.cands-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 8px 4px; }
+.cand-item { padding: 9px 10px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 1px; transition: background 0.12s; border: 1px solid transparent; }
+.cand-item:hover { background: rgba(255,255,255,0.1); }
+.cand-item.active { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+.cand-name { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cand-date { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.cand-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; padding: 2px 7px; border-radius: 20px; margin-top: 4px; font-weight: 600; }
+.badge-new { background: rgba(37,99,168,0.5); color: #acd0f7; }
+.badge-interview { background: rgba(122,77,0,0.4); color: #f5c842; }
+.badge-done { background: rgba(26,107,26,0.4); color: #7acf7a; }
+.badge-crm { background: rgba(26,107,26,0.5); color: #7acf7a; }
+
+.sidebar-footer { padding: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
+.add-cand-btn { width: 100%; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); font-size: 12px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.12s; }
+.add-cand-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; background: var(--bg); }
+.main-header { padding: 14px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); flex-shrink: 0; box-shadow: 0 2px 8px rgba(31,56,100,0.07); }
+.main-header h2 { font-size: 16px; font-weight: 700; color: var(--navy); }
 .header-btns { display: flex; gap: 8px; }
 .main-body { flex: 1; overflow-y: auto; padding: 24px; }
-.btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: 0.5px solid var(--border-med); background: none; color: var(--text2); transition: background 0.12s, color 0.12s; font-family: inherit; }
+
+/* BUTTONS */
+.btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-med); background: none; color: var(--text2); transition: background 0.12s, color 0.12s; font-family: inherit; }
 .btn:hover { background: var(--surface2); color: var(--text); }
-.btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 500; }
-.btn-primary:hover { opacity: 0.85; background: var(--text); color: var(--bg); }
-.btn-full { width: 100%; justify-content: center; padding: 10px; }
+.btn-primary { background: var(--navy); color: #fff; border-color: var(--navy); font-weight: 600; }
+.btn-primary:hover { background: var(--navy-dark); color: #fff; border-color: var(--navy-dark); }
+.btn-full { width: 100%; justify-content: center; padding: 11px; font-size: 13px; }
 .btn-danger { border-color: var(--red-text); color: var(--red-text); }
 .btn-danger:hover { background: var(--red-bg); }
-.btn-crm { background: #1F3864; color: #fff; border-color: #1F3864; font-weight: 600; font-size: 13px; padding: 10px 20px; }
-.btn-crm:hover { background: #162a4a; color: #fff; }
+.btn-crm { background: var(--navy); color: #fff; border-color: var(--navy); font-weight: 700; font-size: 13px; padding: 10px 22px; border-radius: var(--radius-sm); }
+.btn-crm:hover { background: var(--navy-dark); color: #fff; }
+
+/* FORM */
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
 .field-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
-input[type=text], input[type=password], textarea, select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-med); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; resize: vertical; line-height: 1.5; }
-input:focus, textarea:focus { border-color: var(--text); }
-.info-box { border-radius: var(--radius-sm); padding: 10px 13px; font-size: 12px; display: flex; gap: 8px; align-items: flex-start; margin-bottom: 16px; }
-.info-box i { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-.info-blue { background: var(--blue-bg); color: var(--blue-text); }
-.info-green { background: var(--green-bg); color: var(--green-text); }
-.info-amber { background: var(--amber-bg); color: var(--amber-text); }
+input[type=text], input[type=password], textarea, select { width: 100%; padding: 9px 12px; border: 1px solid var(--border-med); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; resize: vertical; line-height: 1.5; }
+input:focus, textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(31,56,100,0.1); }
+
+/* INFO BOXES */
+.info-box { border-radius: var(--radius-sm); padding: 11px 14px; font-size: 12px; display: flex; gap: 9px; align-items: flex-start; margin-bottom: 16px; }
+.info-box i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.info-blue { background: var(--blue-bg); color: var(--navy); border: 1px solid rgba(31,56,100,0.15); }
+.info-green { background: var(--green-bg); color: var(--green-text); border: 1px solid rgba(26,107,26,0.2); }
+.info-amber { background: var(--amber-bg); color: var(--amber-text); border: 1px solid rgba(122,77,0,0.2); }
+
+/* PANELS */
 .panel { display: none; }
 .panel.active { display: block; }
-.tabs { display: flex; border-bottom: 0.5px solid var(--border); margin-bottom: 20px; }
-.tab-btn { padding: 9px 16px; font-size: 13px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: color 0.12s; font-family: inherit; }
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-.ai-result { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 18px; margin-top: 16px; font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
-.ai-result-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-.loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 13px; padding: 24px 0; }
-.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: blink 1.2s ease-in-out infinite; }
+
+/* TABS */
+.tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; background: var(--surface); border-radius: 8px 8px 0 0; padding: 0 4px; }
+.tab-btn { padding: 10px 16px; font-size: 13px; color: var(--text3); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.12s; font-family: inherit; font-weight: 500; }
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--navy); border-bottom-color: var(--navy); font-weight: 700; }
+
+/* AI RESULT */
+.ai-result { background: var(--surface); border: 1px solid var(--border-med); border-radius: var(--radius); padding: 20px; margin-top: 16px; font-size: 13px; line-height: 1.8; color: var(--text); white-space: pre-wrap; box-shadow: 0 2px 8px rgba(31,56,100,0.06); }
+.ai-result-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; display: flex; align-items: center; gap: 5px; font-weight: 700; }
+
+/* LOADING */
+.loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 13px; padding: 28px 0; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--navy); animation: blink 1.2s ease-in-out infinite; }
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
-.empty { text-align: center; padding: 60px 20px; color: var(--text3); }
-.empty i { font-size: 36px; margin-bottom: 12px; display: block; }
-.empty p { font-size: 13px; }
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(8px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 100; }
-.toast.show { opacity: 1; transform: translateY(0); }
-.section-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
-hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0; }
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 440px; max-width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
-.modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
-.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
 
-/* PDF Upload */
-.pdf-upload-area { border: 2px dashed var(--border-med); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.15s; margin-bottom: 16px; }
-.pdf-upload-area:hover { border-color: var(--text); background: var(--surface2); }
-.pdf-upload-area.dragging { border-color: var(--blue-text); background: var(--blue-bg); }
-.pdf-upload-area.loaded { border-color: var(--green-text); background: var(--green-bg); }
-.pdf-upload-area.error { border-color: var(--red-text); background: var(--red-bg); }
-.pdf-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+.empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+.empty i { font-size: 40px; margin-bottom: 14px; display: block; opacity: 0.4; }
+.empty p { font-size: 13px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy); color: #fff; padding: 11px 18px; border-radius: var(--radius-sm); font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(8px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 100; box-shadow: 0 4px 16px rgba(31,56,100,0.3); }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.section-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(13,31,53,0.5); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: var(--radius); padding: 26px; width: 440px; max-width: 90vw; box-shadow: 0 12px 40px rgba(31,56,100,0.2); border: 1px solid var(--border); }
+.modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; color: var(--navy); }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
+/* PDF UPLOAD */
+.pdf-upload-area { border: 2px dashed var(--border-med); border-radius: var(--radius); padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.15s; margin-bottom: 16px; background: var(--surface2); }
+.pdf-upload-area:hover { border-color: var(--navy); background: var(--blue-bg); }
+.pdf-upload-area.dragging { border-color: var(--accent); background: var(--blue-bg); }
+.pdf-upload-area.loaded { border-color: #2e7d32; background: var(--green-bg); border-style: solid; }
+.pdf-upload-area.error { border-color: var(--red-text); background: var(--red-bg); border-style: solid; }
+.pdf-icon { font-size: 36px; margin-bottom: 10px; display: block; }
 .pdf-upload-area p { font-size: 13px; color: var(--text2); }
-.pdf-upload-area.loaded p { color: var(--green-text); font-weight: 500; }
+.pdf-upload-area.loaded p { color: var(--green-text); font-weight: 600; }
 .pdf-upload-area.error p { color: var(--red-text); }
 
-/* CRM export box */
-.crm-export-box { background: #f0f4ff; border: 1.5px solid #1F3864; border-radius: var(--radius); padding: 16px 20px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.crm-export-box-text { font-size: 13px; color: #1F3864; }
-.crm-export-box-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+/* CRM EXPORT BOX */
+.crm-export-box { background: var(--blue-bg); border: 2px solid var(--navy); border-radius: var(--radius); padding: 18px 22px; margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.crm-export-box-text { font-size: 13px; color: var(--navy); }
+.crm-export-box-text strong { display: block; font-size: 15px; margin-bottom: 3px; font-weight: 700; }
 
-/* Model selector */
-.model-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--surface2); border: 0.5px solid var(--border-med); border-radius: 20px; padding: 2px 8px; font-size: 11px; color: var(--text3); }
-
-::-webkit-scrollbar { width: 4px; }
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-med); border-radius: 4px; }
+
+/* STATS BAR */
+.stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; border-left: 4px solid var(--navy); }
+.stat-card-n { font-size: 24px; font-weight: 700; color: var(--navy); }
+.stat-card-l { font-size: 11px; color: var(--text3); margin-top: 2px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 </style>
 </head>
 <body>
@@ -204,7 +246,7 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
       <div class="panel" id="panel-prompt">
         <div class="info-box info-amber">
           <i class="ti ti-bulb"></i>
-          <div><strong>Промт — инструкция для ИИ.</strong> Переменная <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{VACANCY}</code> заменяется на контекст вакансии автоматически.</div>
+          <div><strong>Промт — инструкция для ИИ.</strong> Переменная <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:monospace;">{VACANCY}</code> заменяется на контекст вакансии автоматически.</div>
         </div>
         <div class="field"><label>Промт для анализа резюме</label><textarea id="prompt-resume" rows="14"></textarea></div>
         <div style="display:flex;gap:8px;margin-bottom:20px;">
@@ -231,15 +273,12 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
           <i class="ti ti-alert-triangle"></i>
           <span>Сначала выбери или создай вакансию — без неё анализ будет без контекста</span>
         </div>
-
-        <!-- PDF Upload -->
         <div class="pdf-upload-area" id="pdf-area" onclick="document.getElementById('pdf-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
           <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="onFileSelected(event)">
           <span class="pdf-icon">📄</span>
           <p><strong>Загрузи PDF резюме</strong></p>
-          <p style="font-size:11px;color:var(--text3);margin-top:4px;">Нажми или перетащи файл сюда</p>
+          <p style="font-size:11px;color:var(--text3);margin-top:5px;">Нажми или перетащи файл сюда</p>
         </div>
-
         <div class="field"><label>Имя кандидата</label><input type="text" id="c-name" placeholder="Фамилия Имя Отчество — заполнится автоматически из PDF"></div>
         <div class="field">
           <label>Текст резюме</label>
@@ -262,7 +301,7 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
         <div id="tab-resume"><div id="resume-content"></div></div>
         <div id="tab-questions" style="display:none;">
           <div class="field"><label>Особый фокус для этого кандидата</label><textarea id="q-focus" rows="3" placeholder="Что особенно важно проверить?"></textarea></div>
-          <button class="btn btn-primary btn-full" onclick="generateQuestions()"><i class="ti ti-list"></i> Сгенерировать вопросы</button>
+          <button class="btn btn-primary btn-full" onclick="generateQuestions()"><i class="ti ti-list"></i> Сгенерировать вопросы для интервью</button>
           <div id="questions-content"></div>
         </div>
         <div id="tab-interview" style="display:none;">
@@ -299,7 +338,7 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
         <div class="section-title">Как получить API ключ</div>
         <div class="info-box info-blue" style="flex-direction:column;gap:6px;">
           <div><strong>console.anthropic.com</strong></div>
-          <ol style="padding-left:16px;font-size:12px;line-height:1.9;">
+          <ol style="padding-left:16px;font-size:12px;line-height:2;">
             <li>Зарегистрируйся на console.anthropic.com</li>
             <li>Раздел API Keys → Create Key</li>
             <li>Пополни баланс от $5 (Billing → Add credits)</li>
@@ -332,44 +371,246 @@ hr.divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0
 <script>
 // ── Default prompts ───────────────────────────────────────────────
 const DEFAULT_PROMPTS = {
-  resume: `Ты опытный HR-аналитик. Анализируй резюме кандидата применительно к конкретной вакансии.
+  resume: `# РОЛЬ
+
+Ты — Senior Recruiter, Assessment Interviewer, Executive Search Consultant и аналитик поведения.
+
+Твоя задача — не пересказывать резюме кандидата.
+
+Твоя задача — оценить:
+
+* реальный уровень кандидата;
+* качество опыта;
+* мышление;
+* системность;
+* уровень ответственности;
+* способность самостоятельно решать задачи;
+* масштаб опыта;
+* вероятность успешной работы именно в данной компании;
+* риски найма.
+
+Работай как профессиональный оценщик кандидатов.
+
+Не работай как стандартный HR.
+
+Не используй шаблонные фразы.
+
+Не хвали кандидата без оснований.
+
+Не делай выводов, которые невозможно подтвердить данными резюме.
+
+Если данных недостаточно — прямо пиши, что информации недостаточно.
+
+---
+
+# КОНТЕКСТ
 
 {VACANCY}
 
-Структура анализа (строго соблюдай):
-1. ПЕРВИЧНОЕ ВПЕЧАТЛЕНИЕ — одно-два предложения, суть профиля кандидата
-2. ЧТО ВЫГЛЯДИТ СИЛЬНЫМ — конкретные факты из резюме, не общие слова
-3. РИСКИ — пронумерованный список, каждый риск с объяснением почему это риск именно для этой вакансии
-4. ЧТО ОБЯЗАТЕЛЬНО ПРОВЕРЯТЬ НА ИНТЕРВЬЮ — конкретные блоки и вопросы
-5. ПРЕДВАРИТЕЛЬНЫЙ DISC — гипотеза профиля с кратким объяснением
-6. ВЕРДИКТ — звать / не звать на интервью, процентная оценка соответствия вакансии
+Перед анализом внимательно изучи:
 
-Пиши конкретно и честно. Используй только факты из резюме. Не пиши общие фразы.`,
+* требования вакансии;
+* задачи вакансии;
+* сферу деятельности компании;
+* специфику бизнеса;
+* пожелания рекрутера.
 
-  questions: `Ты опытный интервьюер и HR-аналитик. Составляешь вопросы для интервью.
+После этого анализируй кандидата только относительно данной вакансии.
+
+Не оценивай кандидата абстрактно.
+
+Оценивай его применительно к конкретной роли и конкретной компании.
+
+---
+
+# ПРАВИЛА АНАЛИЗА
+
+Всегда отделяй:
+
+* факты из резюме;
+* свои гипотезы;
+* свои выводы.
+
+Не путай одно с другим.
+
+Если делаешь предположение — обязательно помечай его как гипотезу.
+
+Например: "Гипотеза: кандидат мог работать преимущественно как исполнитель, а не как самостоятельный организатор процессов."
+
+Не выдавай гипотезы за факты.
+
+---
+
+# ЧТО АНАЛИЗИРОВАТЬ
+
+## 1. ОБЩАЯ ОЦЕНКА
+
+Дай краткое первое впечатление: насколько кандидат выглядит релевантным, какой уровень специалиста просматривается, насколько совпадает с вакансией.
+
+## 2. СИЛЬНЫЕ СТОРОНЫ
+
+Выдели реальные сильные стороны. Не копируй текст резюме. Объясняй, почему это является сильной стороной именно для данной вакансии.
+
+## 3. РИСКИ
+
+Выдели все возможные риски: частая смена работы, отсутствие нужного опыта, отсутствие масштаба, карьерные провалы, снижение уровня должностей, нестыковки, размытые формулировки, признаки завышения опыта, признаки зависимости от руководителя, отсутствие самостоятельности.
+
+Для каждого риска объясняй: почему это риск; насколько риск высокий, средний или низкий.
+
+## 4. ЧТО НАСТОРАЖИВАЕТ
+
+Отдельно выдели моменты, которые требуют проверки: слишком общие формулировки, отсутствие цифр, отсутствие результатов, отсутствие информации о масштабе проектов, отсутствие информации о зоне ответственности.
+
+## 5. АНАЛИЗ ОПЫТА
+
+Определи: выглядит ли опыт реальным; есть ли признаки глубокого погружения; есть ли признаки номинального участия; есть ли признаки того, что кандидат работал "под крылом" более сильных коллег.
+
+Особенно обращай внимание на: конкретику; результаты; объем ответственности; масштаб проектов.
+
+## 6. АНАЛИЗ МЫШЛЕНИЯ
+
+По резюме оцени вероятный стиль мышления (исполнитель / организатор / координатор / аналитик / эксперт / руководитель / предприниматель). Обязательно объясняй, на основании каких формулировок сделан вывод.
+
+## 7. АНАЛИЗ САМОСТОЯТЕЛЬНОСТИ
+
+Оцени вероятность того, что кандидат: самостоятельно принимал решения; самостоятельно вел проекты; самостоятельно взаимодействовал с заказчиком; самостоятельно решал проблемы. Если данных недостаточно — укажи это.
+
+## 8. АНАЛИЗ МАСШТАБА
+
+Определи: понятен ли масштаб проектов; понятен ли бюджет проектов; понятно ли количество объектов; понятна ли зона ответственности. Если масштаб не раскрыт — обязательно укажи это как слепую зону.
+
+## 9. СОВМЕСТИМОСТЬ С КОМПАНИЕЙ
+
+Оцени: насколько кандидат подходит именно этой компании; насколько подходит под среду компании; сможет ли работать с данным руководством; сможет ли работать в данном темпе; не возникнет ли конфликт ожиданий. Если информации недостаточно — укажи это.
+
+## 10. ГИПОТЕЗЫ ДЛЯ ПРОВЕРКИ
+
+Составь список гипотез. Для каждой: что предполагается, почему возникла гипотеза, какой риск она несет.
+
+## 11. DISC-ПРОФИЛЬ (ПРЕДВАРИТЕЛЬНАЯ ГИПОТЕЗА)
+
+Сделай осторожную оценку D/I/S/C. Обязательно укажи, что это только предварительная гипотеза по резюме. Не делай категоричных выводов.
+
+## 12. ИТОГОВОЕ ЗАКЛЮЧЕНИЕ
+
+Вердикт: Приглашать на интервью / Возможно приглашать после уточнений / Не приглашать.
+
+Обоснование.
+
+Уровень соответствия вакансии: от 1 до 10.
+
+Отдельно укажи: Главные плюсы кандидата. Главные риски кандидата. Что необходимо проверить в первую очередь.`,
+
+  questions: `# РОЛЬ
+
+Ты — Senior Recruiter, Assessment Interviewer и Executive Search Consultant.
+
+Твоя задача — построить интервью не по шаблону, а под конкретного кандидата.
+
+У тебя есть:
+* вакансия и её описание;
+* информация о компании;
+* комментарии рекрутера;
+* резюме кандидата;
+* предыдущий анализ кандидата.
 
 {VACANCY}
 
-Структура вопросов:
-1. ВВОДНЫЕ ВОПРОСЫ (3-4) — разогрев, установление контакта
-2. ПРОФЕССИОНАЛЬНЫЕ ВОПРОСЫ (5-7) — проверка технических знаний и реального опыта
-3. ПОВЕДЕНЧЕСКИЕ ВОПРОСЫ по методу STAR (3-4) — ситуации из прошлого
-4. МОТИВАЦИОННЫЕ ВОПРОСЫ (3-4) — почему ищет, куда хочет расти, что важно
-5. СТОП-ФАКТОРЫ — на что обратить особое внимание именно у этого кандидата
+Используй все эти данные одновременно.
 
-К каждому вопросу одной строкой — что именно он проверяет.`,
+---
+
+# ГЛАВНОЕ ПРАВИЛО
+
+Не составляй универсальные HR-вопросы.
+
+Каждый вопрос должен проверять конкретную гипотезу, возникшую после анализа резюме.
+
+Если вопрос не проверяет гипотезу — он не нужен.
+
+---
+
+# ЗАДАЧА
+
+Построй структуру интервью именно под данного кандидата.
+
+Цель интервью:
+* подтвердить сильные стороны;
+* проверить риски;
+* проверить реальные компетенции;
+* проверить глубину опыта;
+* проверить самостоятельность;
+* проверить масштаб ответственности;
+* проверить совместимость с компанией.
+
+---
+
+# ФОРМАТ ОТВЕТА
+
+## БЛОК 1. ОБЩАЯ СТРАТЕГИЯ ИНТЕРВЬЮ
+
+Опиши: какой тип кандидата перед нами; какие основные риски необходимо проверить; какие сильные стороны требуют подтверждения; на что интервьюеру нужно обратить особое внимание.
+
+## БЛОК 2. КЛЮЧЕВЫЕ ГИПОТЕЗЫ
+
+Для каждой гипотезы укажи: гипотеза; почему возникла; каким вопросом проверяется; какой ответ будет сильным; какой ответ будет тревожным.
+
+## БЛОК 3. СТРУКТУРА ИНТЕРВЬЮ
+
+Сформируй интервью по этапам. Для каждого этапа: цель этапа; вопросы; что проверяет каждый вопрос; признаки сильного ответа; признаки слабого ответа.
+
+## БЛОК 4. ВОПРОСЫ НА ГЛУБИНУ ОПЫТА
+
+Составь вопросы, которые невозможно пройти общими словами. Вопросы должны заставлять кандидата раскрывать: реальные действия; реальные решения; реальные ошибки; реальные результаты.
+
+## БЛОК 5. ВОПРОСЫ НА САМОСТОЯТЕЛЬНОСТЬ
+
+Проверь: принимал ли решения сам; был ли лидером процесса; работал ли под контролем; мог ли решать проблемы без руководителя.
+
+## БЛОК 6. ВОПРОСЫ НА МАСШТАБ
+
+Проверь: бюджеты; количество объектов; численность участников; объем документации; количество подрядчиков; ответственность за результат.
+
+## БЛОК 7. ВОПРОСЫ НА СОВМЕСТИМОСТЬ С КОМПАНИЕЙ
+
+Проверь: отношение к давлению; отношение к контролю; отношение к конфликтам; отношение к ответственности; отношение к руководителям.
+
+## БЛОК 8. КРАСНЫЕ ФЛАГИ
+
+Перечисли: какие ответы должны насторожить; какие ответы могут говорить о завышении опыта; какие ответы могут говорить о зависимости от руководителя; какие ответы могут говорить о недостатке компетенции.
+
+---
+
+# ТРЕБОВАНИЯ
+
+Не ограничивайся стандартными вопросами.
+
+Копай в реальные действия кандидата.
+
+Проверяй мышление, а не заученные ответы.
+
+Проверяй не знания терминов, а способность применять опыт на практике.
+
+Если резюме содержит слабые места — интервью должно быть построено вокруг их проверки.`,
 
   interview: `Ты опытный HR-аналитик. Разбираешь прошедшее интервью.
 
 {VACANCY}
 
 Структура разбора:
+
 1. ОБЩЕЕ ВПЕЧАТЛЕНИЕ — подтвердились ли гипотезы из анализа резюме
+
 2. СИЛЬНЫЕ СТОРОНЫ — что кандидат продемонстрировал хорошо
+
 3. ТРЕВОЖНЫЕ СИГНАЛЫ — что насторожило, противоречия, уклончивые ответы
+
 4. МОТИВАЦИЯ — что реально движет кандидатом (между строк)
+
 5. УТОЧНЁННЫЙ DISC — профиль после интервью
+
 6. РЕКОМЕНДАЦИЯ — оффер / следующий этап / отказ + чёткое обоснование
+
 7. ОБРАТНАЯ СВЯЗЬ ПО ИНТЕРВЬЮЕРУ — что хорошо сработало, какие вопросы можно было задать иначе
 
 Пиши конкретно, давай практические выводы.`
@@ -388,7 +629,6 @@ let state = {
 };
 
 function save() { try { localStorage.setItem('hr_eps_v2', JSON.stringify(state)); } catch(e) {} }
-
 function load() {
   try {
     const s = localStorage.getItem('hr_eps_v2');
@@ -445,15 +685,21 @@ function setPdfArea(status, text, sub) {
   const area = document.getElementById('pdf-area');
   area.className = 'pdf-upload-area' + (status ? ' ' + status : '');
   area.innerHTML = `<input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="onFileSelected(event)">
-    <span class="pdf-icon">${status === 'loaded' ? '✅' : status === 'error' ? '⚠️' : '📄'}</span>
-    <p><strong>${text}</strong></p>
-    <p style="font-size:11px;color:var(--text3);margin-top:4px;">${sub}</p>`;
+<span class="pdf-icon">${status === 'loaded' ? '✅' : status === 'error' ? '⚠️' : '📄'}</span>
+<p><strong>${text}</strong></p>
+<p style="font-size:11px;color:var(--text3);margin-top:5px;">${sub}</p>`;
 }
 
 function extractNameFromText(text) {
   const first500 = text.substring(0, 600);
   const match = first500.match(/([А-ЯЁ][а-яё]+)\s+([А-ЯЁ][а-яё]+)\s+([А-ЯЁ][а-яё]+)/);
   return match ? match[0] : '';
+}
+
+function extractPhoneFromText(text) {
+  const m = text.match(/(?:\+7|8)[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{2})[\s\-\(\)]*(\d{2})/);
+  if (m) return '+7' + m[1] + m[2] + m[3] + m[4];
+  return '';
 }
 
 async function parsePDF(file) {
@@ -468,9 +714,14 @@ async function parsePDF(file) {
       text += tc.items.map(x => x.str).join(' ') + '\n';
     }
     const name = extractNameFromText(text);
+    const phone = extractPhoneFromText(text);
     if (name) document.getElementById('c-name').value = name;
     document.getElementById('c-resume').value = text.trim();
-    setPdfArea('loaded', file.name, name ? `Имя: ${name}` : 'Имя не найдено — заполни вручную');
+    let subText = '';
+    if (name && phone) subText = `${name} · ${phone}`;
+    else if (name) subText = `Имя: ${name} · Телефон не найден`;
+    else subText = 'Имя и телефон не найдены — заполни вручную';
+    setPdfArea('loaded', file.name, subText);
   } catch(e) {
     setPdfArea('error', 'Ошибка чтения PDF', 'Вставь текст резюме вручную');
   }
@@ -566,6 +817,7 @@ function savePrompt() {
   state.prompts.interview = document.getElementById('prompt-interview').value;
   save(); toast('Промты сохранены');
 }
+
 function resetPrompt() {
   if (!confirm('Сбросить все промты к исходным?')) return;
   state.prompts = { ...DEFAULT_PROMPTS };
@@ -616,25 +868,26 @@ function filteredCandidates() {
   if (!state.currentVacancyId) return state.candidates;
   return state.candidates.filter(c => c.vacancyId === state.currentVacancyId);
 }
+
 function currentCandidate() { return state.candidates.find(c => c.id === state.currentCandidateId); }
 
 function renderCandidates() {
   const list = document.getElementById('candidates-list');
   const cands = filteredCandidates();
-  if (!cands.length) { list.innerHTML = '<div style="padding:8px;font-size:11px;color:var(--text3);">Нет кандидатов</div>'; return; }
+  if (!cands.length) { list.innerHTML = '<div style="padding:8px 10px;font-size:11px;color:rgba(255,255,255,0.3);">Нет кандидатов</div>'; return; }
   list.innerHTML = cands.map(c => {
     const badge = c.addedToCrm
       ? `<span class="cand-badge badge-crm">в CRM</span>`
       : c.interviewDone
-      ? `<span class="cand-badge badge-done">разобран</span>`
-      : c.hasQuestions
-      ? `<span class="cand-badge badge-interview">интервью</span>`
-      : `<span class="cand-badge badge-new">новый</span>`;
+        ? `<span class="cand-badge badge-done">разобран</span>`
+        : c.hasQuestions
+          ? `<span class="cand-badge badge-interview">интервью</span>`
+          : `<span class="cand-badge badge-new">новый</span>`;
     return `<div class="cand-item ${c.id === state.currentCandidateId ? 'active' : ''}" onclick="openCandidate('${c.id}')">
-      <div class="cand-name">${escHtml(c.name)}</div>
-      <div class="cand-date">${c.date}</div>
+<div class="cand-name">${escHtml(c.name)}</div>
+<div class="cand-date">${c.date}</div>
       ${badge}
-    </div>`;
+</div>`;
   }).join('');
 }
 
@@ -686,6 +939,7 @@ function vacancyContext() {
   if (!v) return 'Вакансия не выбрана';
   return `ВАКАНСИЯ: ${v.title}\nОПИСАНИЕ: ${v.desc || 'не указано'}\nО КОМПАНИИ: ${v.company || 'не указана'}\nКОММЕНТАРИИ РЕКРУТЕРА: ${v.notes || 'нет'}`;
 }
+
 function buildPrompt(type) { return state.prompts[type].replace('{VACANCY}', vacancyContext()); }
 
 // ── API ───────────────────────────────────────────────────────────
@@ -696,7 +950,7 @@ async function callAPI({ system, user, loadingEl, onSuccess, onError }) {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: state.model || 'claude-sonnet-4-6', max_tokens: 2000, system, messages: [{ role: 'user', content: user }] })
+      body: JSON.stringify({ model: state.model || 'claude-sonnet-4-6', max_tokens: 4000, system, messages: [{ role: 'user', content: user }] })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
@@ -707,29 +961,40 @@ async function callAPI({ system, user, loadingEl, onSuccess, onError }) {
 function resultBox(label, text) {
   return `<div class="ai-result"><div class="ai-result-label"><i class="ti ti-sparkles"></i> ${label}</div>${escHtml(text)}</div>`;
 }
+
 function errorBox(msg) {
   return `<div class="ai-result" style="color:var(--red-text);background:var(--red-bg);">⚠️ ${msg}</div>`;
 }
+
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ── CRM export ────────────────────────────────────────────────────
 function addToCRM(candidateId) {
   const c = state.candidates.find(x => x.id === candidateId);
   if (!c) return;
-  const crmUrl = state.crmUrl || 'https://yulanna-cloud.github.io/crm/';
-  const v = currentVacancy();
-  // Pack candidate data into URL params
+
+  const crmUrl = (state.crmUrl || 'https://yulanna-cloud.github.io/crm/').replace(/\/$/, '');
+  const v = state.vacancies.find(x => x.id === c.vacancyId);
+
+  // Извлекаем телефон из текста резюме
+  let phone = '';
+  if (c.resume) {
+    const m = c.resume.match(/(?:\+7|8)[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{2})[\s\-\(\)]*(\d{2})/);
+    if (m) phone = '+7' + m[1] + m[2] + m[3] + m[4];
+  }
+
   const params = new URLSearchParams({
     action: 'add',
     name: c.name,
+    phone: phone,
     vacancy: v ? v.title : '',
-    source: 'HR-ассистент',
-    analysis: c.rawAnalysis ? c.rawAnalysis.substring(0, 500) : ''
+    source: 'HR-ассистент'
   });
+
   c.addedToCrm = true;
   save(); renderCandidates();
-  // Open CRM with params
-  window.open(crmUrl + '?' + params.toString(), '_blank');
+
+  window.open(crmUrl + '/?' + params.toString(), '_blank');
   toast('Открываю CRM...');
 }
 
@@ -737,14 +1002,14 @@ function crmExportBox(candidateId) {
   const c = state.candidates.find(x => x.id === candidateId);
   const alreadyAdded = c && c.addedToCrm;
   return `<div class="crm-export-box">
-    <div class="crm-export-box-text">
-      <strong>Кандидат подходит?</strong>
+<div class="crm-export-box-text">
+<strong>Кандидат подходит?</strong>
       ${alreadyAdded ? '✅ Уже добавлен в CRM' : 'Добавь в CRM для дальнейшей работы'}
-    </div>
-    <button class="btn btn-crm" onclick="addToCRM('${candidateId}')" ${alreadyAdded ? 'style="opacity:0.6"' : ''}>
-      <i class="ti ti-database-plus"></i> ${alreadyAdded ? 'Открыть CRM' : 'Добавить в CRM'}
-    </button>
-  </div>`;
+</div>
+<button class="btn btn-crm" onclick="addToCRM('${candidateId}')" ${alreadyAdded ? 'style="opacity:0.6"' : ''}>
+<i class="ti ti-database-plus"></i> ${alreadyAdded ? 'Открыть CRM' : 'Добавить в CRM'}
+</button>
+</div>`;
 }
 
 // ── Actions ───────────────────────────────────────────────────────
