@@ -1114,13 +1114,15 @@ function applyIncomingResume(payload) {
     setPdfArea('loaded', 'Резюме загружено с HH.ru', sub);
   }
 
+  // Запоминаем timestamp чтобы не применить повторно
+  if (ts) window._lastAppliedResumeTs = ts;
   // Чистим после использования
   localStorage.removeItem('hh_resume_incoming');
 }
 
-// Проверяем при загрузке страницы
+// Проверяем при загрузке страницы и постоянно слушаем новые данные
 (function checkOnLoad() {
-  // Из localStorage (основной канал)
+  // Разовая проверка при загрузке
   setTimeout(() => {
     try {
       const raw = localStorage.getItem('hh_resume_incoming');
@@ -1129,22 +1131,22 @@ function applyIncomingResume(payload) {
         applyIncomingResume(payload);
       }
     } catch(e) {}
-
-    // Из URL (fallback если ассистент не был открыт)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('from') === 'extension') {
-      // Чистим URL
-      window.history.replaceState({}, document.title,
-        window.location.protocol + '//' + window.location.host + window.location.pathname);
-      // Данные придут через localStorage чуть позже
-      setTimeout(() => {
-        try {
-          const raw = localStorage.getItem('hh_resume_incoming');
-          if (raw) applyIncomingResume(JSON.parse(raw));
-        } catch(e) {}
-      }, 1000);
-    }
   }, 400);
+
+  // Постоянная проверка каждую секунду
+  setInterval(() => {
+    try {
+      const raw = localStorage.getItem('hh_resume_incoming');
+      if (!raw) return;
+      const payload = JSON.parse(raw);
+      if (!payload || !payload.ts) return;
+      // Проверяем что данные новые (не старше 10 минут) и ещё не применялись
+      const lastApplied = window._lastAppliedResumeTs || 0;
+      if (payload.ts > lastApplied) {
+        applyIncomingResume(payload);
+      }
+    } catch(e) {}
+  }, 1000);
 })();
 
 // Слушаем сообщение от расширения в реальном времени
