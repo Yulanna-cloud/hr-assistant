@@ -852,16 +852,48 @@ function resetAnalysis() {
   c.rawAnalysis = '';
   c.hasQuestions = false;
   c.questionsHTML = '';
+  c.rawAnalysisQuestions = '';
   c.interviewHTML = '';
+  c.rawAnalysisInterview = '';
   c.interviewDone = '';
+  c.verdict = '';
   save();
   renderCandidates();
   document.getElementById('resume-content').innerHTML =
-    '<div class="empty"><i class="ti ti-file-text"></i><p>Нажми «Проанализировать резюме» чтобы запустить анализ заново</p></div>';
+    `<div style="text-align:center;padding:40px 20px;">
+      <div style="color:var(--text3);font-size:13px;margin-bottom:16px;">Анализ сброшен. Запусти заново.</div>
+      <button class="btn btn-primary" onclick="reAnalyzeCandidate()">
+        <i class="ti ti-sparkles"></i> Проанализировать резюме
+      </button>
+    </div>`;
   document.getElementById('questions-content').innerHTML = '';
   document.getElementById('interview-content').innerHTML = '';
   switchTab('resume');
   toast('Анализ сброшен');
+}
+
+function reAnalyzeCandidate() {
+  const c = currentCandidate();
+  if (!c) return;
+  if (!c.resume) { toast('Нет текста резюме'); return; }
+  const el = document.getElementById('resume-content');
+  callAPI({
+    system: buildPrompt('resume'),
+    user: 'РЕЗЮМЕ КАНДИДАТА: ' + c.name + '\n\n' + c.resume,
+    loadingEl: el,
+    onSuccess: (text) => {
+      let verdict = '';
+      if (/🟢/.test(text)) verdict = 'green';
+      else if (/🟡/.test(text)) verdict = 'yellow';
+      else if (/🔴/.test(text)) verdict = 'red';
+      c.resumeHTML = resultBox('Анализ резюме · ' + c.name, text) + crmExportBox(c.id);
+      c.rawAnalysis = text;
+      c.verdict = verdict;
+      save(); renderCandidates();
+      el.innerHTML = c.resumeHTML;
+    },
+    onError: (msg) => { el.innerHTML = errorBox(msg); }
+  });
 }
 
 function deleteCandidate() {
