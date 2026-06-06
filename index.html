@@ -876,6 +876,12 @@ function reAnalyzeCandidate() {
   const c = currentCandidate();
   if (!c) return;
   if (!c.resume) { toast('Нет текста резюме'); return; }
+  // Убеждаемся что выбрана правильная вакансия кандидата
+  if (c.vacancyId && state.currentVacancyId !== c.vacancyId) {
+    state.currentVacancyId = c.vacancyId;
+    document.getElementById('vacancy-select').value = c.vacancyId;
+    save();
+  }
   const el = document.getElementById('resume-content');
   callAPI({
     system: buildPrompt('resume'),
@@ -952,8 +958,13 @@ function clearAllData() {
 // ── Context ───────────────────────────────────────────────────────
 function vacancyContext() {
   const v = currentVacancy();
-  if (!v) return 'Вакансия не выбрана';
-  return `ВАКАНСИЯ: ${v.title}\nОПИСАНИЕ: ${v.desc || 'не указано'}\nО КОМПАНИИ: ${v.company || 'не указана'}\nКОММЕНТАРИИ РЕКРУТЕРА: ${v.notes || 'нет'}`;
+  if (!v) return '';
+  const parts = [];
+  if (v.title) parts.push('ВАКАНСИЯ: ' + v.title);
+  if (v.desc) parts.push('ОПИСАНИЕ ВАКАНСИИ:\n' + v.desc);
+  if (v.company) parts.push('О КОМПАНИИ:\n' + v.company);
+  if (v.notes) parts.push('КОММЕНТАРИИ РЕКРУТЕРА:\n' + v.notes);
+  return parts.join('\n\n');
 }
 
 function buildPrompt(type) { return state.prompts[type].replace('{VACANCY}', vacancyContext()); }
