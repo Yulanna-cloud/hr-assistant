@@ -315,6 +315,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
         </div>
         <div id="tab-rawresume" style="display:none;">
           <div class="ai-result-label" style="margin-bottom:8px;"><i class="ti ti-file-text"></i> Текст резюме</div>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+            <button class="btn" style="font-size:11px;padding:3px 10px;" onclick="copyText(currentCandidate()?.resume)"><i class="ti ti-copy"></i> Скопировать резюме</button>
+          </div>
           <div id="rawresume-content" style="background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);padding:20px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--text);max-height:600px;overflow-y:auto;"></div>
         </div>
         <div id="tab-interview" style="display:none;">
@@ -887,45 +890,17 @@ function switchTab(tab) {
   updateCopyBtn(tab);
 }
 
-function updateCopyBtn(tab) {
-  // Убираем старую кнопку если есть
-  const old = document.getElementById('copy-tab-btn');
-  if (old) old.remove();
-
-  const copyMap = {
-    resume: () => { const c = currentCandidate(); return c ? c.rawAnalysis : ''; },
-    questions: () => { const c = currentCandidate(); return c ? c.rawAnalysisQuestions : ''; },
-    interview: () => { const c = currentCandidate(); return c ? c.rawAnalysisInterview : ''; },
-    rawresume: () => { const c = currentCandidate(); return c ? c.resume : ''; }
-  };
-
-  const getText = copyMap[tab];
-  if (!getText) return;
-
-  const tabEl = document.getElementById('tab-' + tab);
-  if (!tabEl) return;
-
-  const btn = document.createElement('button');
-  btn.id = 'copy-tab-btn';
-  btn.className = 'btn';
-  btn.style.cssText = 'position:absolute;top:12px;right:16px;font-size:11px;padding:4px 10px;';
-  btn.innerHTML = '<i class="ti ti-copy"></i> Скопировать';
-  btn.onclick = () => {
-    const text = getText();
-    if (!text) { toast('Нечего копировать'); return; }
-    navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => {
-      // fallback
-      const ta = document.createElement('textarea');
-      ta.value = text; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      toast('Скопировано!');
-    });
-  };
-
-  // Вставляем кнопку в панель кнопок шапки
-  const btnsEl = document.getElementById('header-btns');
-  if (btnsEl) btnsEl.prepend(btn);
+function copyText(text) {
+  if (!text) { toast('Нечего копировать'); return; }
+  navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Скопировано!');
+  });
 }
+
+function updateCopyBtn(tab) { /* no-op, copy buttons are inline */ }
 
 // ── Settings ──────────────────────────────────────────────────────
 function saveSettings() {
@@ -968,7 +943,14 @@ async function callAPI({ system, user, loadingEl, onSuccess, onError }) {
 }
 
 function resultBox(label, text) {
-  return `<div class="ai-result"><div class="ai-result-label"><i class="ti ti-sparkles"></i> ${label}</div>${escHtml(text)}</div>`;
+  const id = 'rb_' + Math.random().toString(36).slice(2);
+  return `<div class="ai-result">
+<div class="ai-result-label" style="display:flex;align-items:center;justify-content:space-between;">
+  <span><i class="ti ti-sparkles"></i> ${label}</span>
+  <button class="btn" style="font-size:11px;padding:3px 10px;" onclick="copyText(document.getElementById('${id}').innerText)"><i class="ti ti-copy"></i> Скопировать</button>
+</div>
+<div id="${id}" style="white-space:pre-wrap;">${escHtml(text)}</div>
+</div>`;
 }
 
 function errorBox(msg) {
