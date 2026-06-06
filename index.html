@@ -837,6 +837,8 @@ function openCandidate(id) {
   document.getElementById('interview-content').innerHTML = c.interviewHTML || '';
   document.getElementById('resume-content').innerHTML = c.resumeHTML ||
     '<div class="empty"><i class="ti ti-file-text"></i><p>Анализ резюме ещё не проводился</p></div>';
+  // Показываем кнопку копирования для активной вкладки
+  setTimeout(() => updateCopyBtn('resume'), 100);
 }
 
 function resetAnalysis() {
@@ -920,12 +922,9 @@ function updateCopyBtn(tab) {
     });
   };
 
-  // Вставляем кнопку в заголовок панели
-  const header = document.getElementById('main-header');
-  if (header) {
-    const btnsEl = document.getElementById('header-btns');
-    if (btnsEl) btnsEl.prepend(btn);
-  }
+  // Вставляем кнопку в панель кнопок шапки
+  const btnsEl = document.getElementById('header-btns');
+  if (btnsEl) btnsEl.prepend(btn);
 }
 
 // ── Settings ──────────────────────────────────────────────────────
