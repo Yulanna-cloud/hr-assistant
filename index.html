@@ -76,6 +76,9 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .badge-interview { background: rgba(122,77,0,0.4); color: #f5c842; }
 .badge-done { background: rgba(26,107,26,0.4); color: #7acf7a; }
 .badge-crm { background: rgba(26,107,26,0.5); color: #7acf7a; }
+.badge-green { background: rgba(26,107,26,0.6); color: #7acf7a; }
+.badge-yellow { background: rgba(180,120,0,0.5); color: #f5c842; }
+.badge-red { background: rgba(160,32,32,0.5); color: #f7a0a0; }
 
 .sidebar-footer { padding: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
 .add-cand-btn { width: 100%; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); font-size: 12px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.12s; }
@@ -383,58 +386,44 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
 const DEFAULT_PROMPTS = {
   resume: `РОЛЬ
 
-Ты — Senior Recruiter, Assessment Interviewer и Executive Search Consultant.
+Ты — опытный рекрутер.
 
-Твоя задача — помочь принять решение по кандидату относительно конкретной вакансии.
+Твоя задача — помочь принять решение по кандидату после просмотра резюме.
 
-Ты оцениваешь не только опыт, но и: релевантность опыта; уровень кандидата; признаки самостоятельности; системность; стабильность карьеры; потенциальные риски найма; вероятность успешной адаптации к вакансии.
+Не проводи глубокий assessment. Не строй DISC-профили. Не анализируй мышление. Не анализируй масштаб проектов. Не анализируй компании, где работал кандидат. Не пересказывай резюме.
 
-Не пересказывай резюме. Не пиши длинные аналитические отчеты. Не описывай работодателей кандидата. Не повторяй факты, которые и так очевидны из резюме. Мне нужны выводы для принятия решения.
+Мне нужен вывод для рекрутера, а не аналитический отчет.
 
 {VACANCY}
 
-Оценивай кандидата только относительно данной вакансии.
-
-ГЛАВНАЯ ЗАДАЧА
-
-После анализа я должна быстро понять: стоит ли двигать кандидата дальше, какие есть риски, что необходимо уточнить до основного интервью.
+ГЛАВНЫЙ ВОПРОС: стоит ли связываться с кандидатом, есть ли критические риски, что нужно уточнить в первом звонке.
 
 ФОРМАТ ОТВЕТА
 
-ВЕРДИКТ
-Выбери один вариант:
-🟢 Приглашать на интервью
+РЕШЕНИЕ
+Выбери только один вариант:
+🟢 Звать на интервью
 🟡 Сначала уточнить по телефону
-🔴 Не приглашать
-Причина: 1-2 предложения.
+🔴 Не рассматривать
+Причина: не более 2 предложений.
 
 СООТВЕТСТВИЕ ВАКАНСИИ
 Оценка: X/10
-Краткий комментарий: 1-2 предложения.
 
 СИЛЬНЫЕ СТОРОНЫ
-Не более 5 пунктов. Только выводы. Без пояснений.
+Максимум 5 пунктов. Только короткие формулировки. Без пояснений.
 
 РИСКИ
-Не более 5 пунктов. Только выводы. Без пояснений.
+Максимум 5 пунктов. Только короткие формулировки. Только риски, которые реально влияют на решение. Без пояснений.
 
-ПРЕДВАРИТЕЛЬНЫЙ ПРОФИЛЬ
-Уровень кандидата: Junior / Middle / Senior / Expert
-Тип: Исполнитель / Координатор / Организатор / Руководитель
-Самостоятельность: Низкая / Средняя / Высокая
-
-ЧТО ОБЯЗАТЕЛЬНО УТОЧНИТЬ В ТЕЛЕФОННОМ ЗВОНКЕ
-Не более 3 вопросов. Только те вопросы, ответы на которые могут изменить решение о приглашении на интервью.
+ВОПРОСЫ ДЛЯ ПЕРВОГО ЗВОНКА
+Максимум 3 вопроса. Только вопросы, ответы на которые могут изменить решение. Если вопросов нет — так и напиши.
 
 ИТОГ
-Главный плюс: одно предложение.
-Главный риск: одно предложение.
-
-ПРАВИЛА
-Не объясняй свои рассуждения. Не доказывай выводы. Не пересказывай резюме. Не анализируй компании, где работал кандидат. Не описывай проекты кандидата. Не используй длинные абзацы.
+Одна строка: Рекомендуется / Не рекомендуется к дальнейшему рассмотрению.
 
 ОГРАНИЧЕНИЯ
-Максимум 300 слов. Если кандидат очевидно подходит или очевидно не подходит, анализ должен быть еще короче. Главная цель анализа — принять решение о следующем шаге по кандидату.`,
+Максимум 150 слов. Не объясняй выводы. Не доказывай выводы. Не используй таблицы и длинные абзацы. Если кандидат явно подходит или явно не подходит — ответ должен быть ещё короче.`,
 
   questions: `# РОЛЬ
 
@@ -793,7 +782,8 @@ function showPanel(name) {
     const c = currentCandidate();
     document.getElementById('main-title').textContent = c ? c.name : '';
     document.getElementById('header-btns').innerHTML =
-      `<button class="btn btn-danger" onclick="deleteCandidate()"><i class="ti ti-trash"></i> Удалить</button>`;
+      `<button class="btn" onclick="resetAnalysis()"><i class="ti ti-refresh"></i> Обновить анализ</button>
+      <button class="btn btn-danger" onclick="deleteCandidate()"><i class="ti ti-trash"></i> Удалить</button>`;
   }
   renderCandidates();
 }
@@ -811,13 +801,23 @@ function renderCandidates() {
   const cands = filteredCandidates();
   if (!cands.length) { list.innerHTML = '<div style="padding:8px 10px;font-size:11px;color:rgba(255,255,255,0.3);">Нет кандидатов</div>'; return; }
   list.innerHTML = cands.map(c => {
-    const badge = c.addedToCrm
-      ? `<span class="cand-badge badge-crm">в CRM</span>`
-      : c.interviewDone
-        ? `<span class="cand-badge badge-done">разобран</span>`
-        : c.hasQuestions
-          ? `<span class="cand-badge badge-interview">интервью</span>`
-          : `<span class="cand-badge badge-new">новый</span>`;
+    // Определяем бейдж вердикта
+  let badge = '';
+  if (c.addedToCrm) {
+    badge = `<span class="cand-badge badge-crm">в CRM</span>`;
+  } else if (c.verdict === 'green') {
+    badge = `<span class="cand-badge badge-green">🟢 звать</span>`;
+  } else if (c.verdict === 'yellow') {
+    badge = `<span class="cand-badge badge-yellow">🟡 уточнить</span>`;
+  } else if (c.verdict === 'red') {
+    badge = `<span class="cand-badge badge-red">🔴 отказ</span>`;
+  } else if (c.interviewDone) {
+    badge = `<span class="cand-badge badge-done">разобран</span>`;
+  } else if (c.hasQuestions) {
+    badge = `<span class="cand-badge badge-interview">интервью</span>`;
+  } else {
+    badge = `<span class="cand-badge badge-new">новый</span>`;
+  }
     return `<div class="cand-item ${c.id === state.currentCandidateId ? 'active' : ''}" onclick="openCandidate('${c.id}')">
 <div class="cand-name">${escHtml(c.name)}</div>
 <div class="cand-date">${c.date}</div>
@@ -837,6 +837,26 @@ function openCandidate(id) {
   document.getElementById('interview-content').innerHTML = c.interviewHTML || '';
   document.getElementById('resume-content').innerHTML = c.resumeHTML ||
     '<div class="empty"><i class="ti ti-file-text"></i><p>Анализ резюме ещё не проводился</p></div>';
+}
+
+function resetAnalysis() {
+  const c = currentCandidate();
+  if (!c) return;
+  if (!confirm('Сбросить результат анализа? Данные кандидата сохранятся.')) return;
+  c.resumeHTML = '';
+  c.rawAnalysis = '';
+  c.hasQuestions = false;
+  c.questionsHTML = '';
+  c.interviewHTML = '';
+  c.interviewDone = '';
+  save();
+  renderCandidates();
+  document.getElementById('resume-content').innerHTML =
+    '<div class="empty"><i class="ti ti-file-text"></i><p>Нажми «Проанализировать резюме» чтобы запустить анализ заново</p></div>';
+  document.getElementById('questions-content').innerHTML = '';
+  document.getElementById('interview-content').innerHTML = '';
+  switchTab('resume');
+  toast('Анализ сброшен');
 }
 
 function deleteCandidate() {
@@ -860,6 +880,51 @@ function switchTab(tab) {
     } else {
       el.textContent = 'Текст резюме не сохранён';
     }
+  }
+  // Показываем кнопку копирования для нужных вкладок
+  updateCopyBtn(tab);
+}
+
+function updateCopyBtn(tab) {
+  // Убираем старую кнопку если есть
+  const old = document.getElementById('copy-tab-btn');
+  if (old) old.remove();
+
+  const copyMap = {
+    resume: () => { const c = currentCandidate(); return c ? c.rawAnalysis : ''; },
+    questions: () => { const c = currentCandidate(); return c ? c.rawAnalysisQuestions : ''; },
+    interview: () => { const c = currentCandidate(); return c ? c.rawAnalysisInterview : ''; },
+    rawresume: () => { const c = currentCandidate(); return c ? c.resume : ''; }
+  };
+
+  const getText = copyMap[tab];
+  if (!getText) return;
+
+  const tabEl = document.getElementById('tab-' + tab);
+  if (!tabEl) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'copy-tab-btn';
+  btn.className = 'btn';
+  btn.style.cssText = 'position:absolute;top:12px;right:16px;font-size:11px;padding:4px 10px;';
+  btn.innerHTML = '<i class="ti ti-copy"></i> Скопировать';
+  btn.onclick = () => {
+    const text = getText();
+    if (!text) { toast('Нечего копировать'); return; }
+    navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      toast('Скопировано!');
+    });
+  };
+
+  // Вставляем кнопку в заголовок панели
+  const header = document.getElementById('main-header');
+  if (header) {
+    const btnsEl = document.getElementById('header-btns');
+    if (btnsEl) btnsEl.prepend(btn);
   }
 }
 
@@ -997,7 +1062,12 @@ function analyzeResume() {
     onSuccess: (text) => {
       const id = 'c_' + Date.now();
       const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
-      state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, resumeHTML: resultBox('Анализ резюме · ' + name, text) + crmExportBox(id), rawAnalysis: text, hasQuestions: false, interviewDone: false, addedToCrm: false });
+      // Парсим вердикт из текста ИИ
+      let verdict = '';
+      if (/🟢/.test(text)) verdict = 'green';
+      else if (/🟡/.test(text)) verdict = 'yellow';
+      else if (/🔴/.test(text)) verdict = 'red';
+      state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, resumeHTML: resultBox('Анализ резюме · ' + name, text) + crmExportBox(id), rawAnalysis: text, verdict, hasQuestions: false, interviewDone: false, addedToCrm: false });
       state.currentCandidateId = id;
       save();
       el.innerHTML = `<div class="info-box info-green"><i class="ti ti-circle-check"></i> Готово! Открываю карточку...</div>`;
@@ -1018,6 +1088,7 @@ function generateQuestions() {
     onSuccess: (text) => {
       c.qFocus = focus;
       c.questionsHTML = resultBox('Вопросы для интервью · ' + c.name, text);
+      c.rawAnalysisQuestions = text;
       c.hasQuestions = true;
       save(); renderCandidates();
       el.innerHTML = c.questionsHTML;
@@ -1038,6 +1109,7 @@ function analyzeInterview() {
     loadingEl: el,
     onSuccess: (text) => {
       c.interviewHTML = resultBox('Разбор интервью · ' + c.name, text);
+      c.rawAnalysisInterview = text;
       c.interviewDone = true;
       save(); renderCandidates();
       el.innerHTML = c.interviewHTML;
