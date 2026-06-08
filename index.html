@@ -1127,6 +1127,7 @@ function generateQuestions() {
       c.hasQuestions = true;
       save(); renderCandidates();
       el.innerHTML = c.questionsHTML;
+      syncToSheets();
     },
     onError: (msg) => { el.innerHTML = errorBox(msg); }
   });
@@ -1148,6 +1149,7 @@ function analyzeInterview() {
       c.interviewDone = true;
       save(); renderCandidates();
       el.innerHTML = c.interviewHTML;
+      syncToSheets();
     },
     onError: (msg) => { el.innerHTML = errorBox(msg); }
   });
