@@ -176,6 +176,11 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-med); border-radius: 4px; }
 
+.sync-badge { font-size:11px; padding:3px 10px; border-radius:5px; font-weight:600; }
+.sync-loading { background:var(--amber-bg); color:var(--amber-text); }
+.sync-ok { background:var(--green-bg); color:var(--green-text); }
+.sync-err { background:var(--red-bg); color:var(--red-text); }
+
 /* STATS BAR */
 .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; border-left: 4px solid var(--navy); }
@@ -228,7 +233,11 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
   <div class="main">
     <div class="main-header">
       <h2 id="main-title">Выбери вакансию</h2>
-      <div class="header-btns" id="header-btns"></div>
+      <div class="header-btns" id="header-btns" style="display:flex;align-items:center;gap:8px;">
+        <span id="sync-status" style="display:none;font-size:11px;padding:3px 10px;border-radius:5px;font-weight:600;"></span>
+        <button class="btn" onclick="loadFromSheets()" title="Загрузить данные из Google Sheets"><i class="ti ti-refresh"></i> Загрузить</button>
+        <button class="btn" onclick="syncToSheets()" title="Сохранить данные в Google Sheets"><i class="ti ti-cloud-upload"></i> Сохранить</button>
+      </div>
     </div>
     <div class="main-body">
 
@@ -1095,6 +1104,7 @@ function analyzeResume() {
       state.currentCandidateId = id;
       save();
       el.innerHTML = `<div class="info-box info-green"><i class="ti ti-circle-check"></i> Готово! Открываю карточку...</div>`;
+      syncToSheets(); // автосохранение после анализа
       setTimeout(() => openCandidate(id), 1000);
     },
     onError: (msg) => { el.innerHTML = errorBox(msg); }
@@ -1140,6 +1150,49 @@ function analyzeInterview() {
     },
     onError: (msg) => { el.innerHTML = errorBox(msg); }
   });
+}
+
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwrapo9EQQP5tPvMViiDC2hvwgMm0NwKv_YIKsCncUBEUycIadSpsLXpfemOFthsVoQWQ/exec';
+
+function syncStatus(msg, type) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = msg ? 'inline-block' : 'none';
+  el.className = 'sync-badge sync-' + (type || 'loading');
+  if (type === 'ok') setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+function syncToSheets() {
+  syncStatus('⏳ Сохраняю...', 'loading');
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action:'save', candidates:state.candidates, vacancies:state.vacancies, prompts:state.prompts, model:state.model, crmUrl:state.crmUrl })
+  })
+  .then(r => r.json())
+  .then(res => { if (res && res.ok) syncStatus('✅ Сохранено', 'ok'); else syncStatus('❌ Ошибка', 'err'); })
+  .catch(() => syncStatus('❌ Нет связи', 'err'));
+}
+
+function loadFromSheets() {
+  syncStatus('⏳ Загружаю...', 'loading');
+  const cbName = 'cb_hr_' + Date.now();
+  const script = document.createElement('script');
+  window[cbName] = function(res) {
+    delete window[cbName];
+    document.head.removeChild(script);
+    if (res && res.ok && res.data) {
+      const d = res.data;
+      if (d.candidates && d.candidates.length) state.candidates = d.candidates;
+      if (d.vacancies && d.vacancies.length) state.vacancies = d.vacancies;
+      if (d.prompts && Object.keys(d.prompts).length) state.prompts = { ...state.prompts, ...d.prompts };
+      if (d.settings) { if (d.settings.model) state.model = d.settings.model; if (d.settings.crmUrl) state.crmUrl = d.settings.crmUrl; }
+      save(); applyLoaded(); syncStatus('✅ Загружено', 'ok');
+    } else { syncStatus('❌ Ошибка загрузки', 'err'); }
+  };
+  script.src = SHEETS_URL + '?action=read&callback=' + cbName;
+  script.onerror = () => { delete window[cbName]; syncStatus('❌ Нет связи', 'err'); };
+  document.head.appendChild(script);
 }
 
 load();
