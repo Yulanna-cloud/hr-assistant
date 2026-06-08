@@ -1188,7 +1188,15 @@ function loadFromSheets() {
       if (d.vacancies && d.vacancies.length) state.vacancies = d.vacancies;
       if (d.prompts && Object.keys(d.prompts).length) state.prompts = { ...state.prompts, ...d.prompts };
       if (d.settings) { if (d.settings.model) state.model = d.settings.model; if (d.settings.crmUrl) state.crmUrl = d.settings.crmUrl; }
-      save(); applyLoaded(); syncStatus('✅ Загружено', 'ok');
+      save();
+      applyLoaded();
+      // Показываем всех кандидатов — выбираем первую вакансию если не выбрана
+      if (!state.currentVacancyId && state.vacancies.length) {
+        state.currentVacancyId = state.vacancies[0].id;
+        save();
+      }
+      renderCandidates();
+      syncStatus('✅ Загружено', 'ok');
     } else { syncStatus('❌ Ошибка загрузки', 'err'); }
   };
   script.src = SHEETS_URL + '?action=read&callback=' + cbName;
