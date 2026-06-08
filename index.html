@@ -1166,11 +1166,33 @@ function syncStatus(msg, type) {
   if (type === 'ok') setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
+function encodeForSheets(candidates) {
+  // Кодируем переносы строк чтобы Sheets не потерял структуру
+  return candidates.map(c => {
+    const encoded = {...c};
+    ['resume','rawAnalysis','rawAnalysisQuestions','rawAnalysisInterview','transcript'].forEach(field => {
+      if (encoded[field]) encoded[field] = encoded[field].replace(/\n/g, '||NL||');
+    });
+    return encoded;
+  });
+}
+
+function decodeFromSheets(candidates) {
+  // Декодируем переносы строк обратно
+  return candidates.map(c => {
+    const decoded = {...c};
+    ['resume','rawAnalysis','rawAnalysisQuestions','rawAnalysisInterview','transcript'].forEach(field => {
+      if (decoded[field]) decoded[field] = decoded[field].replace(/\|\|NL\|\|/g, '\n');
+    });
+    return decoded;
+  });
+}
+
 function syncToSheets() {
   syncStatus('⏳ Сохраняю...', 'loading');
   fetch(SHEETS_URL, {
     method: 'POST',
-    body: JSON.stringify({ action:'save', candidates:state.candidates, vacancies:state.vacancies, prompts:state.prompts, model:state.model, crmUrl:state.crmUrl })
+    body: JSON.stringify({ action:'save', candidates:encodeForSheets(state.candidates), vacancies:state.vacancies, prompts:state.prompts, model:state.model, crmUrl:state.crmUrl })
   })
   .then(r => r.json())
   .then(res => { if (res && res.ok) syncStatus('✅ Сохранено', 'ok'); else syncStatus('❌ Ошибка', 'err'); })
@@ -1186,7 +1208,7 @@ function loadFromSheets() {
     document.head.removeChild(script);
     if (res && res.ok && res.data) {
       const d = res.data;
-      if (d.candidates && d.candidates.length) state.candidates = d.candidates;
+      if (d.candidates && d.candidates.length) state.candidates = decodeFromSheets(d.candidates);
       if (d.vacancies && d.vacancies.length) state.vacancies = d.vacancies;
       if (d.prompts && Object.keys(d.prompts).length) state.prompts = { ...state.prompts, ...d.prompts };
       if (d.settings) { if (d.settings.model) state.model = d.settings.model; if (d.settings.crmUrl) state.crmUrl = d.settings.crmUrl; }
