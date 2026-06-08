@@ -118,7 +118,11 @@ input:focus, textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px r
 
 /* PANELS */
 .panel { display: none; }
-.panel.active { display: block; }
+.panel.active { display: flex; flex-direction: column; }
+#panel-candidate.active { display: block; }
+#panel-vacancy.active { display: block; }
+#panel-prompt.active { display: block; }
+#panel-settings.active { display: block; }
 
 /* TABS */
 .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; background: var(--surface); border-radius: 8px 8px 0 0; padding: 0 4px; }
@@ -281,21 +285,23 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
       </div>
 
       <!-- New candidate -->
-      <div class="panel" id="panel-new">
+      <div class="panel" id="panel-new" style="display:none;flex-direction:column;height:100%;">
         <div id="no-vacancy-warn" class="info-box info-amber" style="display:none;">
           <i class="ti ti-alert-triangle"></i>
           <span>Сначала выбери или создай вакансию — без неё анализ будет без контекста</span>
         </div>
-        <div class="pdf-upload-area" id="pdf-area" onclick="document.getElementById('pdf-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <div class="pdf-upload-area" id="pdf-area" onclick="document.getElementById('pdf-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)" style="padding:10px 16px;display:flex;align-items:center;gap:12px;text-align:left;">
           <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="onFileSelected(event)">
-          <span class="pdf-icon">📄</span>
-          <p><strong>Загрузи PDF резюме</strong></p>
-          <p style="font-size:11px;color:var(--text3);margin-top:5px;">Нажми или перетащи файл сюда</p>
+          <span style="font-size:22px;">📄</span>
+          <div>
+            <p style="font-size:13px;font-weight:600;">Загрузи резюме с HH</p>
+            <p style="font-size:11px;color:var(--text3);margin-top:2px;">Нажми или перетащи PDF</p>
+          </div>
         </div>
         <div class="field"><label>Имя кандидата</label><input type="text" id="c-name" placeholder="Фамилия Имя Отчество — заполнится автоматически из PDF"></div>
         <div class="field">
           <label>Текст резюме</label>
-          <textarea id="c-resume" placeholder="Заполнится автоматически из PDF. Или вставь текст вручную..." style="height:calc(100vh - 420px);min-height:300px;max-height:700px;font-size:12px;line-height:1.6;resize:none;"></textarea>
+          <textarea id="c-resume" placeholder="Заполнится автоматически из PDF. Или вставь текст вручную..." style="flex:1;height:calc(100vh - 380px);min-height:200px;font-size:12px;line-height:1.6;resize:none;"></textarea>
           <p class="field-hint">Из PDF извлекается автоматически. Можно отредактировать.</p>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -328,10 +334,10 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
           <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
             <button class="btn" style="font-size:11px;padding:3px 10px;" onclick="copyText(currentCandidate()?.resume)"><i class="ti ti-copy"></i> Скопировать резюме</button>
           </div>
-          <div id="rawresume-content" style="background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);padding:20px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--text);max-height:600px;overflow-y:auto;"></div>
+          <div id="rawresume-content" style="background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);padding:20px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--text);height:calc(100vh - 260px);overflow-y:auto;"></div>
         </div>
         <div id="tab-interview" style="display:none;">
-          <div class="field"><label>Транскрипт или заметки интервью</label><textarea id="i-transcript" rows="12" placeholder="Вставь запись интервью..."></textarea></div>
+          <div class="field"><label>Транскрипт или заметки интервью</label><textarea id="i-transcript" style="height:calc(100vh - 380px);min-height:200px;resize:none;" placeholder="Вставь запись интервью..."></textarea></div>
           <button class="btn btn-primary btn-full" onclick="analyzeInterview()"><i class="ti ti-brain"></i> Разобрать интервью</button>
           <div id="interview-content"></div>
         </div>
