@@ -295,7 +295,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
         <div class="field"><label>Имя кандидата</label><input type="text" id="c-name" placeholder="Фамилия Имя Отчество — заполнится автоматически из PDF"></div>
         <div class="field">
           <label>Текст резюме</label>
-          <textarea id="c-resume" rows="18" placeholder="Заполнится автоматически из PDF. Или вставь текст вручную..." style="min-height:320px;font-size:12px;line-height:1.6;"></textarea>
+          <textarea id="c-resume" placeholder="Заполнится автоматически из PDF. Или вставь текст вручную..." style="height:calc(100vh - 420px);min-height:300px;max-height:700px;font-size:12px;line-height:1.6;resize:none;"></textarea>
           <p class="field-hint">Из PDF извлекается автоматически. Можно отредактировать.</p>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -1018,25 +1018,28 @@ function quickAddToCRM() {
   const resume = document.getElementById('c-resume').value.trim();
   if (!name) { toast('Заполни имя кандидата'); return; }
 
-  // Извлекаем телефон из текста резюме
+  // Извлекаем телефон
   let phone = '';
   if (resume) {
-    const m = resume.match(/(?:\+7|8)[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{3})[\s\-\(\)]*(\d{2})[\s\-\(\)]*(\d{2})/);
+    const m = resume.match(/(?:\+7|8)[\s\-\(\)]*(\ d{3})[\s\-\(\)]*(\ d{3})[\s\-\(\)]*(\ d{2})[\s\-\(\)]*(\ d{2})/);
     if (m) phone = '+7' + m[1] + m[2] + m[3] + m[4];
   }
 
+  // Сохраняем кандидата в ассистент
+  const id = 'c_' + Date.now();
+  const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+  state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, resumeHTML: '', rawAnalysis: '', verdict: '', hasQuestions: false, interviewDone: false, addedToCrm: true });
+  state.currentCandidateId = id;
+  save();
+  renderCandidates();
+  syncToSheets();
+
+  // Открываем CRM
   const crmUrl = (state.crmUrl || 'https://yulanna-cloud.github.io/crm/').replace(/\/$/, '');
   const v = currentVacancy();
-  const params = new URLSearchParams({
-    action: 'add',
-    name: name,
-    phone: phone,
-    vacancy: v ? v.title : '',
-    source: 'HR-ассистент'
-  });
-
+  const params = new URLSearchParams({ action: 'add', name, phone, vacancy: v ? v.title : '', source: 'HR-ассистент' });
   window.open(crmUrl + '/?' + params.toString(), '_blank');
-  toast('Открываю CRM...');
+  toast('Кандидат сохранён, открываю CRM...');
 }
 
 // ── CRM export ────────────────────────────────────────────────────
