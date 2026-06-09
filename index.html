@@ -1283,53 +1283,30 @@ function applyIncomingResume(payload) {
   localStorage.removeItem('hh_resume_incoming');
 }
 
-// Читаем данные от расширения при загрузке страницы
-(function checkOnLoad() {
-  setTimeout(() => {
-    // Способ 1: через localStorage (если расширение записало напрямую)
-    try {
-      const raw = localStorage.getItem('hh_resume_incoming');
-      if (raw) {
-        const payload = JSON.parse(raw);
-        if (payload && payload.ts && Date.now() - payload.ts < 600000) {
-          applyIncomingResume(payload);
-          return;
-        }
-      }
-    } catch(e) {}
-
-    // Способ 2: через URL-параметр с данными в sessionStorage
-    try {
-      const raw = sessionStorage.getItem('hh_resume_incoming');
-      if (raw) {
-        const payload = JSON.parse(raw);
-        if (payload && payload.ts && Date.now() - payload.ts < 600000) {
-          applyIncomingResume(payload);
-          sessionStorage.removeItem('hh_resume_incoming');
-          return;
-        }
-      }
-    } catch(e) {}
-  }, 500);
-})();
-
-// Слушаем сообщение от расширения через window.postMessage
-window.addEventListener('message', (e) => {
-  if (e.data && e.data.action === 'resume') applyIncomingResume(e.data);
-});
-
-// Слушаем событие от расширения когда новая вкладка
-window.addEventListener('hh_resume_ready', () => {
+// Читаем данные от расширения HH
+function checkIncomingResume() {
   try {
-    const raw = sessionStorage.getItem('hh_resume_incoming');
-    if (raw) {
-      const payload = JSON.parse(raw);
-      if (payload && payload.ts && Date.now() - payload.ts < 600000) {
-        applyIncomingResume(payload);
-        sessionStorage.removeItem('hh_resume_incoming');
-      }
+    const raw = localStorage.getItem('hh_resume_incoming');
+    if (!raw) return;
+    const payload = JSON.parse(raw);
+    if (!payload || !payload.ts) return;
+    // Данные свежие (не старше 10 минут) и ещё не применялись
+    const lastApplied = window._lastAppliedResumeTs || 0;
+    if (payload.ts > lastApplied && Date.now() - payload.ts < 600000) {
+      applyIncomingResume(payload);
     }
   } catch(e) {}
+}
+
+// Проверяем при загрузке
+setTimeout(checkIncomingResume, 500);
+
+// Слушаем событие от расширения (когда вкладка уже открыта)
+window.addEventListener('hh_resume_ready', checkIncomingResume);
+
+// Слушаем postMessage (запасной вариант)
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.action === 'resume') applyIncomingResume(e.data);
 });
 </script>
 </body>
