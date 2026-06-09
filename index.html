@@ -282,7 +282,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
       </div>
 
       <!-- New candidate -->
-      <div class="panel" id="panel-new" style="display:none;flex-direction:column;height:100%;">
+      <div class="panel" id="panel-new" style="flex-direction:column;height:100%;">
         <div id="no-vacancy-warn" class="info-box info-amber" style="display:none;">
           <i class="ti ti-alert-triangle"></i>
           <span>Сначала выбери или создай вакансию — без неё анализ будет без контекста</span>
@@ -769,9 +769,14 @@ function resetPrompt() {
 
 // ── Navigation ────────────────────────────────────────────────────
 function showPanel(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('header-btns').innerHTML = '';
+  // Remove inline display:none from active panel
+  setTimeout(() => {
+    const active = document.querySelector('.panel.active');
+    if (active) active.style.display = '';
+  }, 0);
   const titles = { vacancy: 'Вакансия', new: 'Новый кандидат', prompt: 'Промт анализа', settings: 'Настройки' };
   document.getElementById('main-title').textContent = titles[name] || '';
   if (name === 'vacancy') {
