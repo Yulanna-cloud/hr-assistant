@@ -1444,15 +1444,45 @@ function decodeFromSheets(candidates) {
 }
 
 // ── Рейтинг кандидатов ───────────────────────────────────────────
+function getSavedRatings() { try { return JSON.parse(localStorage.getItem('crm_ratings')||'{}'); } catch(e) { return {}; } }
+function saveRating(vacId, text) { const r = getSavedRatings(); r[vacId] = { text, date: new Date().toLocaleDateString('ru-RU'), vacTitle: (state.vacancies.find(v=>v.id===vacId)||{}).title||'' }; localStorage.setItem('crm_ratings', JSON.stringify(r)); }
+function deleteSavedRating(vacId) { const r = getSavedRatings(); delete r[vacId]; localStorage.setItem('crm_ratings', JSON.stringify(r)); }
+
 function populateRatingPanel() {
   const sel = document.getElementById('rating-vacancy-select');
   if (sel) {
     sel.innerHTML = state.vacancies.map(v =>
       '<option value="' + v.id + '"' + (v.id === state.currentVacancyId ? ' selected' : '') + '>' + v.title + '</option>'
     ).join('');
-    sel.onchange = renderRatingCandidates;
+    sel.onchange = function(){ renderRatingCandidates(); showSavedRating(); };
   }
   renderRatingCandidates();
+  showSavedRating();
+}
+
+function showSavedRating() {
+  const vacId = document.getElementById('rating-vacancy-select')?.value;
+  const el = document.getElementById('rating-result');
+  if (!el) return;
+  const saved = getSavedRatings()[vacId];
+  if (saved) {
+    el.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+      '<span style="font-size:11px;color:var(--text3);">💾 Сохранённый рейтинг от ' + saved.date + '</span>' +
+      '<button class="btn btn-danger" style="font-size:11px;padding:3px 10px;" onclick="deleteSavedRatingAndClear()">🗑 Удалить</button>' +
+      '</div>' +
+      resultBox('Рейтинг — ' + saved.vacTitle, saved.text);
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+function deleteSavedRatingAndClear() {
+  const vacId = document.getElementById('rating-vacancy-select')?.value;
+  if (!vacId) return;
+  if (!confirm('Удалить сохранённый рейтинг?')) return;
+  deleteSavedRating(vacId);
+  document.getElementById('rating-result').innerHTML = '';
+  toast('Рейтинг удалён');
 }
 
 function renderRatingCandidates() {
@@ -1532,6 +1562,21 @@ ${candidatesText}
     loadingEl: el,
     onSuccess: (text) => {
       el.innerHTML = resultBox('Рейтинг — ' + (vac ? vac.title : ''), text);
+      // Кнопка сохранения
+      const saveDiv = document.createElement('div');
+      saveDiv.style.cssText = 'margin-top:10px;display:flex;gap:8px;';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-primary';
+      saveBtn.style.fontSize = '12px';
+      saveBtn.innerHTML = '💾 Сохранить рейтинг';
+      saveBtn.onclick = function() {
+        saveRating(vacId, text);
+        saveBtn.innerHTML = '✅ Сохранено';
+        saveBtn.disabled = true;
+        toast('Рейтинг сохранён');
+      };
+      saveDiv.appendChild(saveBtn);
+      el.appendChild(saveDiv);
       document.getElementById('rating-btn').disabled = false;
     },
     onError: (msg) => {
