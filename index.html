@@ -1194,22 +1194,46 @@ ${c.resume}
 Причина: одно предложение
 Решение: Звать на [вакансия] / Уточнить / Не рассматривать
 
-Максимум 200 слов. Только факты из резюме.`;
+Максимум 200 слов. Только факты из резюме.
+ВАЖНО: В поле «Решение» используй ТОЛЬКО одно из четырёх: «Звать на [вакансия]» / «Уточнить на [вакансия]» / «Не рассматривать».
+Если оба соответствия ниже 4/10 — ОБЯЗАТЕЛЬНО пиши «Не рассматривать».`;
 
   callAPI({
     system: prompt,
     user: 'Проведи сравнение.',
     loadingEl: el,
     onSuccess: (text) => {
+      // Определяем вердикт из текста
+      const isReject = /не рассматривать|не подходит|отказ/i.test(text);
+      if (isReject) {
+        const cand = currentCandidate();
+        if (cand) { cand.verdict = 'red'; save(); renderCandidates(); }
+      }
       el.innerHTML = resultBox('Сравнение: ' + vac1.title + ' vs ' + vac2.title, text);
-      // Показываем кнопку перепривязки если ИИ рекомендует другую вакансию
-      el.innerHTML += `<div style="margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Перевести кандидата на другую вакансию:</div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn" onclick="changeVacancy('${vac1Id}')" style="flex:1;">→ ${vac1.title}</button>
-          <button class="btn" onclick="changeVacancy('${vac2Id}')" style="flex:1;">→ ${vac2.title}</button>
-        </div>
-      </div>`;
+      // Добавляем кнопки действий через DOM
+      const _actDiv = document.createElement('div');
+      _actDiv.style.cssText = 'margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);';
+      const _b1 = document.createElement('button');
+      _b1.className = 'btn'; _b1.style.flex = '1';
+      _b1.textContent = '→ ' + vac1.title;
+      _b1.onclick = function(){ changeVacancy(vac1Id); };
+      const _b2 = document.createElement('button');
+      _b2.className = 'btn'; _b2.style.flex = '1';
+      _b2.textContent = '→ ' + vac2.title;
+      _b2.onclick = function(){ changeVacancy(vac2Id); };
+      const _b3 = document.createElement('button');
+      _b3.className = 'btn';
+      _b3.style.cssText = 'background:#FF6B35;color:#fff;border-color:#FF6B35;flex:1;';
+      _b3.textContent = '🔴 Отказ';
+      _b3.onclick = function(){ archiveCandidate(); };
+      const _row = document.createElement('div');
+      _row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+      _row.appendChild(_b1); _row.appendChild(_b2); _row.appendChild(_b3);
+      const _lbl = document.createElement('div');
+      _lbl.style.cssText = 'font-size:12px;color:var(--text2);margin-bottom:8px;';
+      _lbl.textContent = 'Действие по результату:';
+      _actDiv.appendChild(_lbl); _actDiv.appendChild(_row);
+      el.appendChild(_actDiv);
     },
     onError: (msg) => { el.innerHTML = errorBox(msg); }
   });
