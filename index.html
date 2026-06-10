@@ -319,12 +319,33 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
           <button class="tab-btn" id="tab-btn-questions" onclick="switchTab('questions')">Вопросы для интервью</button>
           <button class="tab-btn" id="tab-btn-interview" onclick="switchTab('interview')">Разбор интервью</button>
           <button class="tab-btn" id="tab-btn-rawresume" onclick="switchTab('rawresume')">Резюме</button>
+          <button class="tab-btn" id="tab-btn-compare" onclick="switchTab('compare')">⚖️ Сравнить</button>
         </div>
         <div id="tab-resume"><div id="resume-content"></div></div>
         <div id="tab-questions" style="display:none;">
           <div class="field"><label>Особый фокус для этого кандидата</label><textarea id="q-focus" rows="3" placeholder="Что особенно важно проверить?"></textarea></div>
           <button class="btn btn-primary btn-full" onclick="generateQuestions()"><i class="ti ti-list"></i> Сгенерировать вопросы для интервью</button>
           <div id="questions-content"></div>
+        </div>
+        <div id="tab-compare" style="display:none;">
+          <div style="padding:16px 0 8px;">
+            <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px;">Выбери две вакансии для сравнения:</div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+              <div class="field" style="flex:1;min-width:180px;margin:0;">
+                <label>Вакансия 1</label>
+                <select id="compare-vac1"></select>
+              </div>
+              <div style="font-size:20px;color:#888;">⚖️</div>
+              <div class="field" style="flex:1;min-width:180px;margin:0;">
+                <label>Вакансия 2</label>
+                <select id="compare-vac2"></select>
+              </div>
+              <button class="btn btn-primary" onclick="runComparison()" style="white-space:nowrap;padding:8px 20px;">
+                <i class="ti ti-sparkles"></i> Сравнить
+              </button>
+            </div>
+            <div id="compare-result"></div>
+          </div>
         </div>
         <div id="tab-rawresume" style="display:none;">
           <div class="ai-result-label" style="margin-bottom:8px;"><i class="ti ti-file-text"></i> Текст резюме</div>
@@ -928,10 +949,22 @@ function deleteCandidate() {
 }
 
 function switchTab(tab) {
-  ['resume','questions','interview','rawresume'].forEach(t => {
+  ['resume','questions','interview','rawresume','compare'].forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
     document.getElementById('tab-btn-' + t).classList.toggle('active', t === tab);
   });
+  // Заполняем вкладку сравнения при открытии
+  if (tab === 'compare') {
+    const sel1 = document.getElementById('compare-vac1');
+    const sel2 = document.getElementById('compare-vac2');
+    if (sel1 && sel2 && state.vacancies.length) {
+      const opts = state.vacancies.map(v => '<option value="' + v.id + '">' + v.title + '</option>').join('');
+      sel1.innerHTML = opts;
+      sel2.innerHTML = opts;
+      // По умолчанию разные вакансии
+      if (state.vacancies.length > 1) sel2.value = state.vacancies[1].id;
+    }
+  }
   // Заполняем вкладку резюме при открытии
   if (tab === 'rawresume') {
     const c = currentCandidate();
@@ -1019,6 +1052,98 @@ function errorBox(msg) {
 }
 
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Сравнение кандидата по двум вакансиям ───────────────────────
+function runComparison() {
+  const c = currentCandidate();
+  if (!c || !c.resume) { toast('Нет резюме кандидата'); return; }
+
+  const vac1Id = document.getElementById('compare-vac1').value;
+  const vac2Id = document.getElementById('compare-vac2').value;
+  if (vac1Id === vac2Id) { toast('Выбери две разные вакансии'); return; }
+
+  const vac1 = state.vacancies.find(v => v.id === vac1Id);
+  const vac2 = state.vacancies.find(v => v.id === vac2Id);
+  if (!vac1 || !vac2) return;
+
+  const el = document.getElementById('compare-result');
+  el.innerHTML = '<div class="empty"><i class="ti ti-loader ti-spin"></i><p>Сравниваю...</p></div>';
+
+  function vacContext(v) {
+    const parts = [];
+    if (v.title) parts.push('Вакансия: ' + v.title);
+    if (v.desc) parts.push('Требования:\n' + v.desc);
+    if (v.company) parts.push('Компания:\n' + v.company);
+    if (v.notes) parts.push('Комментарии:\n' + v.notes);
+    return parts.join('\n\n');
+  }
+
+  const prompt = `Ты опытный рекрутер. Сравни кандидата по двум вакансиям и дай чёткую рекомендацию.
+
+ВАКАНСИЯ 1:
+${vacContext(vac1)}
+
+ВАКАНСИЯ 2:
+${vacContext(vac2)}
+
+РЕЗЮМЕ КАНДИДАТА:
+${c.resume}
+
+ФОРМАТ ОТВЕТА (строго):
+
+ВАКАНСИЯ 1 — ${vac1.title}
+Соответствие: X/10
+Ключевые плюсы: (2-3 пункта)
+Ключевые риски: (1-2 пункта)
+
+ВАКАНСИЯ 2 — ${vac2.title}
+Соответствие: X/10
+Ключевые плюсы: (2-3 пункта)
+Ключевые риски: (1-2 пункта)
+
+РЕКОМЕНДАЦИЯ:
+Лучше подходит для: [название вакансии] / Не подходит ни для одной
+Причина: одно предложение
+Решение: Звать на [вакансия] / Уточнить / Не рассматривать
+
+Максимум 200 слов. Только факты из резюме.`;
+
+  callAPI({
+    system: prompt,
+    user: 'Проведи сравнение.',
+    loadingEl: el,
+    onSuccess: (text) => {
+      el.innerHTML = resultBox('Сравнение: ' + vac1.title + ' vs ' + vac2.title, text);
+      // Показываем кнопку перепривязки если ИИ рекомендует другую вакансию
+      el.innerHTML += `<div style="margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border-med);border-radius:var(--radius);">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Перевести кандидата на другую вакансию:</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" onclick="changeVacancy('${vac1Id}')" style="flex:1;">→ ${vac1.title}</button>
+          <button class="btn" onclick="changeVacancy('${vac2Id}')" style="flex:1;">→ ${vac2.title}</button>
+        </div>
+      </div>`;
+    },
+    onError: (msg) => { el.innerHTML = errorBox(msg); }
+  });
+}
+
+function changeVacancy(newVacId) {
+  const c = currentCandidate();
+  if (!c) return;
+  const vac = state.vacancies.find(v => v.id === newVacId);
+  if (!vac) return;
+  if (!confirm('Перевести ' + c.name + ' на вакансию «' + vac.title + '»?')) return;
+  c.vacancyId = newVacId;
+  save();
+  renderCandidates();
+  // Обновляем выбор вакансии в сайдбаре
+  state.currentVacancyId = newVacId;
+  document.getElementById('vacancy-select').value = newVacId;
+  save();
+  renderCandidates();
+  toast('Вакансия изменена на «' + vac.title + '»');
+  syncToSheets();
+}
 
 // ── Быстрое добавление в CRM без анализа ────────────────────────
 function quickAddToCRM() {
