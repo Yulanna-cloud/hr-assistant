@@ -213,6 +213,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
       <button class="nav-btn" id="nav-new" onclick="showPanel('new')">
         <i class="ti ti-user-plus"></i> Новый кандидат
       </button>
+      <button class="nav-btn" id="nav-rating" onclick="showPanel('rating')">
+        <i class="ti ti-trophy"></i> Рейтинг
+      </button>
       <button class="nav-btn" id="nav-prompt" onclick="showPanel('prompt')">
         <i class="ti ti-brain"></i> Промт анализа
       </button>
@@ -310,6 +313,27 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
           </button>
         </div>
         <div id="new-result"></div>
+      </div>
+
+      <!-- Rating panel -->
+      <div class="panel" id="panel-rating" style="display:none;">
+        <div class="info-box info-blue" style="margin-bottom:16px;">
+          <i class="ti ti-info-circle"></i>
+          <span>Выбери кандидатов для сравнения — ИИ выстроит рейтинг от лучшего к худшему.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:180px;margin:0;">
+            <label>Вакансия</label>
+            <select id="rating-vacancy-select"></select>
+          </div>
+          <button class="btn" onclick="selectAllForRating()">✓ Все</button>
+          <button class="btn" onclick="clearRatingSelection()">✕ Сбросить</button>
+        </div>
+        <div id="rating-candidates-list" style="margin-bottom:16px;max-height:280px;overflow-y:auto;border:1px solid var(--border-med);border-radius:var(--radius);"></div>
+        <button class="btn btn-primary btn-full" onclick="buildRating()" id="rating-btn">
+          <i class="ti ti-trophy"></i> Построить рейтинг
+        </button>
+        <div id="rating-result" style="margin-top:16px;"></div>
       </div>
 
       <!-- Candidate detail -->
@@ -819,6 +843,11 @@ function showPanel(name) {
   } else if (name === 'settings') {
     document.getElementById('panel-settings').classList.add('active');
     document.getElementById('nav-settings').classList.add('active');
+  } else if (name === 'rating') {
+    document.getElementById('panel-rating').classList.add('active');
+    document.getElementById('nav-rating').classList.add('active');
+    document.getElementById('main-title').textContent = 'Рейтинг кандидатов';
+    populateRatingPanel();
   } else if (name === 'candidate') {
     document.getElementById('panel-candidate').classList.add('active');
     const c = currentCandidate();
@@ -1321,6 +1350,99 @@ function decodeFromSheets(candidates) {
       if (decoded[field]) decoded[field] = decoded[field].replace(/\|\|NL\|\|/g, '\n');
     });
     return decoded;
+  });
+}
+
+// ── Рейтинг кандидатов ───────────────────────────────────────────
+function populateRatingPanel() {
+  const sel = document.getElementById('rating-vacancy-select');
+  if (sel) {
+    sel.innerHTML = state.vacancies.map(v =>
+      '<option value="' + v.id + '"' + (v.id === state.currentVacancyId ? ' selected' : '') + '>' + v.title + '</option>'
+    ).join('');
+    sel.onchange = renderRatingCandidates;
+  }
+  renderRatingCandidates();
+}
+
+function renderRatingCandidates() {
+  const vacId = document.getElementById('rating-vacancy-select')?.value;
+  const list = document.getElementById('rating-candidates-list');
+  if (!list) return;
+  const candidates = state.candidates.filter(c => !vacId || c.vacancyId === vacId);
+  if (!candidates.length) {
+    list.innerHTML = '<div style="padding:16px;color:var(--text3);font-size:13px;text-align:center;">Нет кандидатов по этой вакансии</div>';
+    return;
+  }
+  list.innerHTML = candidates.map(c => {
+    const verdict = c.verdict === 'green' ? '🟢' : c.verdict === 'yellow' ? '🟡' : c.verdict === 'red' ? '🔴' : '⚪';
+    const hasAnalysis = c.rawAnalysis ? '<span style="color:var(--green);">✓ анализ</span>' : '<span style="color:var(--text3);">без анализа</span>';
+    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border-light);cursor:pointer;">' +
+      '<input type="checkbox" class="rating-checkbox" data-cid="' + c.id + '" style="width:16px;height:16px;cursor:pointer;">' +
+      '<span style="flex:1;font-size:13px;">' + verdict + ' ' + c.name + '</span>' +
+      '<span style="font-size:11px;">' + hasAnalysis + '</span>' +
+      '</label>';
+  }).join('');
+}
+
+function selectAllForRating() {
+  document.querySelectorAll('.rating-checkbox').forEach(cb => cb.checked = true);
+}
+
+function clearRatingSelection() {
+  document.querySelectorAll('.rating-checkbox').forEach(cb => cb.checked = false);
+  document.getElementById('rating-result').innerHTML = '';
+}
+
+function buildRating() {
+  const selected = [...document.querySelectorAll('.rating-checkbox:checked')].map(cb => cb.getAttribute('data-cid'));
+  if (selected.length < 2) { toast('Выбери минимум 2 кандидатов'); return; }
+  if (selected.length > 10) { toast('Максимум 10 кандидатов за раз'); return; }
+  const vacId = document.getElementById('rating-vacancy-select')?.value;
+  const vac = state.vacancies.find(v => v.id === vacId);
+  const candidates = selected.map(id => state.candidates.find(c => c.id === id)).filter(Boolean);
+  const el = document.getElementById('rating-result');
+  el.innerHTML = '<div class="empty"><i class="ti ti-loader ti-spin"></i><p>Строю рейтинг...</p></div>';
+  document.getElementById('rating-btn').disabled = true;
+  const vacContext = vac ? 'ВАКАНСИЯ: ' + vac.title + (vac.desc ? '\nТребования:\n' + vac.desc : '') + (vac.notes ? '\nКомментарии:\n' + vac.notes : '') : '';
+  const candidatesText = candidates.map((c, i) =>
+    '=== КАНДИДАТ ' + (i+1) + ': ' + c.name + ' ===\n' +
+    'Резюме:\n' + (c.resume || 'нет') + '\n' +
+    (c.rawAnalysis ? 'Предыдущий анализ:\n' + c.rawAnalysis : '')
+  ).join('\n\n');
+  const prompt = `Ты опытный рекрутер. Сравни кандидатов и выстрой рейтинг от лучшего к худшему.
+
+${vacContext}
+
+${candidatesText}
+
+ФОРМАТ ОТВЕТА:
+
+РЕЙТИНГ:
+#1 [ФИО] — X/10
+Главный плюс: одна фраза
+Главный риск: одна фраза
+Решение: Звать первым / Звать / Уточнить / Не рассматривать
+
+(и так для каждого кандидата)
+
+ИТОГ:
+Звонить первому: [ФИО]
+Пропустить: [ФИО] — если есть явно неподходящие
+
+Максимум 350 слов. Только факты.`;
+  callAPI({
+    system: prompt,
+    user: 'Построй рейтинг.',
+    loadingEl: el,
+    onSuccess: (text) => {
+      el.innerHTML = resultBox('Рейтинг — ' + (vac ? vac.title : ''), text);
+      document.getElementById('rating-btn').disabled = false;
+    },
+    onError: (msg) => {
+      el.innerHTML = errorBox(msg);
+      document.getElementById('rating-btn').disabled = false;
+    }
   });
 }
 
