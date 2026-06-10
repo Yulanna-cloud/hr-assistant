@@ -231,6 +231,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
       <button class="add-cand-btn" onclick="showPanel('new')">
         <i class="ti ti-plus"></i> Добавить кандидата
       </button>
+      <button class="add-cand-btn" onclick="toggleArchiveView()" id="archive-toggle-btn" style="background:transparent;color:var(--text3);border:1px solid var(--border-med);font-size:11px;margin-top:4px;">
+        <i class="ti ti-archive"></i> <span id="archive-toggle-label">Архив отказов</span>
+      </button>
     </div>
   </div>
 
@@ -853,8 +856,13 @@ function showPanel(name) {
     const c = currentCandidate();
     document.getElementById('main-title').textContent = c ? c.name : '';
     document.getElementById('header-btns').innerHTML =
-      `<button class="btn" onclick="resetAnalysis()"><i class="ti ti-refresh"></i> Обновить анализ</button>
-      <button class="btn btn-danger" onclick="deleteCandidate()"><i class="ti ti-trash"></i> Удалить</button>`;
+(() => {
+      const cand = currentCandidate();
+      const hasAnalysis = cand && cand.rawAnalysis;
+      return '<button class="btn" onclick="resetAnalysis()"><i class="ti ti-refresh"></i> Обновить анализ</button>' +
+        (hasAnalysis ? '<button class="btn" style="background:#FF6B35;color:#fff;border-color:#FF6B35;" onclick="archiveCandidate()"><i class="ti ti-x"></i> Отказ</button>' : '') +
+        '<button class="btn btn-danger" onclick="deleteCandidate()"><i class="ti ti-trash"></i> Удалить</button>';
+    })();
   }
   renderCandidates();
 }
@@ -869,7 +877,7 @@ function currentCandidate() { return state.candidates.find(c => c.id === state.c
 
 function renderCandidates() {
   const list = document.getElementById('candidates-list');
-  const cands = filteredCandidates();
+  const cands = filteredCandidates().filter(c => _showingArchive ? c.archived : !c.archived);
   if (!cands.length) { list.innerHTML = '<div style="padding:8px 10px;font-size:11px;color:rgba(255,255,255,0.3);">Нет кандидатов</div>'; return; }
   list.innerHTML = cands.map(c => {
     // Определяем бейдж вердикта
@@ -910,6 +918,30 @@ function openCandidate(id) {
     '<div class="empty"><i class="ti ti-file-text"></i><p>Анализ резюме ещё не проводился</p></div>';
   // Показываем кнопку копирования для активной вкладки
   setTimeout(() => updateCopyBtn('resume'), 100);
+}
+
+// ── Архив отказов ────────────────────────────────────────────────
+let _showingArchive = false;
+
+function archiveCandidate() {
+  const c = currentCandidate();
+  if (!c) return;
+  if (!confirm('Переместить ' + c.name + ' в архив отказов?')) return;
+  c.archived = true;
+  c.archivedAt = new Date().toLocaleDateString('ru-RU');
+  state.currentCandidateId = null;
+  save();
+  renderCandidates();
+  showPanel('new');
+  syncToSheets();
+  toast(c.name + ' перемещён в архив');
+}
+
+function toggleArchiveView() {
+  _showingArchive = !_showingArchive;
+  const label = document.getElementById('archive-toggle-label');
+  if (label) label.textContent = _showingArchive ? '← Активные' : 'Архив отказов';
+  renderCandidates();
 }
 
 function resetAnalysis() {
@@ -1190,7 +1222,7 @@ function quickAddToCRM() {
   // Сохраняем кандидата в ассистент
   const id = 'c_' + Date.now();
   const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
-  state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, resumeHTML: '', rawAnalysis: '', verdict: '', hasQuestions: false, interviewDone: false, addedToCrm: true });
+  state.candidates.unshift({ id, name, resume, date, vacancyId: state.currentVacancyId, archived: false, resumeHTML: '', rawAnalysis: '', verdict: '', hasQuestions: false, interviewDone: false, addedToCrm: true });
   state.currentCandidateId = id;
   save();
   renderCandidates();
