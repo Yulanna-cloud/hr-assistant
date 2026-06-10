@@ -939,9 +939,11 @@ function showCompareFromNew() {
     const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
     cand = { id, name, resume, date, vacancyId: state.currentVacancyId, archived: false, resumeHTML: '', rawAnalysis: '', verdict: '', hasQuestions: false, interviewDone: false, addedToCrm: false, qFocus: '' };
     state.candidates.unshift(cand);
-    state.currentCandidateId = id;
+    state.currentCandidateId = cand.id;
     save();
     renderCandidates();
+  } else {
+    state.currentCandidateId = cand.id;
   }
 
   // Переходим в карточку кандидата на вкладку Сравнить
@@ -1452,7 +1454,12 @@ function renderRatingCandidates() {
   const vacId = document.getElementById('rating-vacancy-select')?.value;
   const list = document.getElementById('rating-candidates-list');
   if (!list) return;
-  const candidates = state.candidates.filter(c => !vacId || c.vacancyId === vacId);
+  // Показываем всех не архивных без красного вердикта
+  const candidates = state.candidates.filter(c =>
+    !c.archived &&
+    c.verdict !== 'red' &&
+    (!vacId || c.vacancyId === vacId || !c.vacancyId)
+  );
   if (!candidates.length) {
     list.innerHTML = '<div style="padding:16px;color:var(--text3);font-size:13px;text-align:center;">Нет кандидатов по этой вакансии</div>';
     return;
@@ -1570,6 +1577,26 @@ function loadFromSheets() {
 }
 
 load();
+// Убираем дубли кандидатов (по имени, оставляем с анализом)
+(function deduplicateCandidates() {
+  const seen = {};
+  state.candidates = state.candidates.filter(c => {
+    if (!c.name) return true;
+    const key = c.name + '|' + (c.vacancyId || '');
+    if (seen[key]) {
+      // Оставляем того у кого больше данных
+      const prev = state.candidates.find(x => x.id === seen[key]);
+      if (prev && !prev.rawAnalysis && c.rawAnalysis) {
+        seen[key] = c.id;
+        return true;
+      }
+      return false;
+    }
+    seen[key] = c.id;
+    return true;
+  });
+  save();
+})();
 
 // ── Интеграция с расширением HH — через localStorage ────────────
 
@@ -1626,6 +1653,8 @@ function applyIncomingResume(payload) {
       renderCandidates();
       syncToSheets();
     } else {
+      // Обновляем резюме если изменилось
+      if (resume && !exists.resume) exists.resume = resume;
       state.currentCandidateId = exists.id;
       save();
     }
