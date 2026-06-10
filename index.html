@@ -1045,7 +1045,7 @@ function quickAddToCRM() {
   // Открываем CRM
   const crmUrl = (state.crmUrl || 'https://yulanna-cloud.github.io/crm/').replace(/\/$/, '');
   const v = currentVacancy();
-  const params = new URLSearchParams({ action: 'add', name, phone, vacancy: v ? v.title : '', source: 'HR-ассистент' });
+  const params = new URLSearchParams({ action: 'add', name, phone, vacancy: v ? v.title : '', source: 'HeadHunter' });
   window.open(crmUrl + '/?' + params.toString(), '_blank');
   toast('Кандидат сохранён, открываю CRM...');
 }
@@ -1070,7 +1070,7 @@ function addToCRM(candidateId) {
     name: c.name,
     phone: phone,
     vacancy: v ? v.title : '',
-    source: 'HR-ассистент'
+    source: 'HeadHunter'
   });
 
   c.addedToCrm = true;
