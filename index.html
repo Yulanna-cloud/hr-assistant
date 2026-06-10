@@ -308,6 +308,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; 
           <p class="field-hint">Из PDF извлекается автоматически. Можно отредактировать.</p>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <button class="btn btn-full" onclick="showCompareFromNew()" style="flex:1;" title="Сравнить кандидата по двум вакансиям">
+            <i class="ti ti-scale"></i> Сравнить
+          </button>
           <button class="btn btn-primary btn-full" onclick="analyzeResume()" style="flex:2">
             <i class="ti ti-sparkles"></i> Проанализировать резюме
           </button>
@@ -922,6 +925,30 @@ function openCandidate(id) {
 
 // ── Архив отказов ────────────────────────────────────────────────
 let _showingArchive = false;
+
+function showCompareFromNew() {
+  // Сохраняем текущего кандидата если ещё не сохранён
+  const name = document.getElementById('c-name')?.value.trim();
+  const resume = document.getElementById('c-resume')?.value.trim();
+  if (!name || !resume) { toast('Сначала загрузи резюме кандидата'); return; }
+
+  // Если кандидат ещё не в списке — сохраняем
+  let cand = state.candidates.find(x => x.name === name && !x.archived);
+  if (!cand) {
+    const id = 'c_' + Date.now();
+    const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+    cand = { id, name, resume, date, vacancyId: state.currentVacancyId, archived: false, resumeHTML: '', rawAnalysis: '', verdict: '', hasQuestions: false, interviewDone: false, addedToCrm: false, qFocus: '' };
+    state.candidates.unshift(cand);
+    state.currentCandidateId = id;
+    save();
+    renderCandidates();
+  }
+
+  // Переходим в карточку кандидата на вкладку Сравнить
+  state.currentCandidateId = cand.id;
+  showPanel('candidate');
+  setTimeout(() => switchTab('compare'), 200);
+}
 
 function archiveCandidate() {
   const c = currentCandidate();
@@ -1556,6 +1583,28 @@ function applyIncomingResume(payload) {
   if (name || resume) {
     const sub = phone ? name + ' · ' + phone : (name || 'Данные из расширения');
     setPdfArea('loaded', 'Резюме загружено с HH.ru', sub);
+  }
+
+  // Автосохранение кандидата сразу при получении
+  if (name && resume) {
+    const exists = state.candidates.find(x => x.name === name && !x.archived);
+    if (!exists) {
+      const autoId = 'c_' + Date.now();
+      const autoDate = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+      state.candidates.unshift({
+        id: autoId, name, resume, date: autoDate,
+        vacancyId: state.currentVacancyId, archived: false,
+        resumeHTML: '', rawAnalysis: '', verdict: '',
+        hasQuestions: false, interviewDone: false, addedToCrm: false, qFocus: ''
+      });
+      state.currentCandidateId = autoId;
+      save();
+      renderCandidates();
+      syncToSheets();
+    } else {
+      state.currentCandidateId = exists.id;
+      save();
+    }
   }
 
   // Запоминаем timestamp чтобы не применить повторно
